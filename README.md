@@ -9,11 +9,11 @@ Simple &amp; clean modules to use.
 
 
 ---------------------------
-Author: Weyder
+:bowtie: Author: Weyder
 
-Cloud infrastructure analyst | DevOps Culture | AWS
+:computer: Cloud infrastructure analyst | DevOps Culture | AWS
 
-LinkedIn: [@weyderfs](https://www.linkedin.com/in/weyderfs)
+:round_pushpin: LinkedIn: [@weyderfs](https://www.linkedin.com/in/weyderfs)
 
-Email: weyderfs@gmail.com
+:email: Email: weyderfs@gmail.com
 
