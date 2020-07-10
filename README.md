@@ -4,6 +4,7 @@ Simple &amp; clean modules to use.
 
 ##Contents
 * VPC
+* AWS Backup
 
 
 
