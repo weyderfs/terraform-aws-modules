@@ -5,3 +5,18 @@ resource "aws_backup_vault" "vault" {
   recovery_points   = var.recovery_points
 
 }
+
+resource "aws_backup_plan" "plan" {
+  name = var.name_plan
+
+  rule {
+    rule_name         = var.rule_name
+    target_vault_name = "${aws_backup_vault.vault.name}"
+    schedule          = var.cron
+    start_window      = var.start_window
+    completion_window = var.completion_window
+  }
+  
+}
+
+
