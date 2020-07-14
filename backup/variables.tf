@@ -56,4 +56,28 @@ variable "completion_window" {
     description = "(Optional) The amount of time AWS Backup attempts a backup before canceling the job and returning an error."
 }
 
+variable "lifecycle_plan" {
+  type  = string
+  default = null
+  description = "(Optional) The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Fields documented below."
+
+}
+
+variable "recovery_point_tags" {
+  type    = string
+  default = null
+  description = " (Optional) Metadata that you can assign to help organize the resources that you create."
+
+}
+
+variable "copy_action" {
+  type        = string
+  default     = null
+  description = "(Optional) Configuration block(s) with copy operation settings. Detailed below."
+
+}
+
+
+
+
 
