@@ -77,6 +77,41 @@ variable "copy_action" {
 
 }
 
+variable "name_selection" {
+  type        = string
+  default     = null
+  description = "(Required) The display name of a resource selection document."
+
+}
+
+variable "plan_id" {
+  type        = string
+  default     = null
+  description = "(Required) The backup plan ID to be associated with the selection of resources."
+
+}
+
+variable  "type_tag" {
+  type        = string
+  default     = null
+  description = "(Required) An operation, such as StringEquals, that is applied to a key-value pair used to filter resources in a selection."
+
+}
+
+variable  "key_tag" {
+  type    = string
+  default = null
+  description = "(Required) The key in a key-value pair."
+
+}
+
+variable "value_key_tag" {
+  type        = string
+  default     = null
+  description = "(Required) The value in a key-value pair."
+}
+
+
 
 
 
