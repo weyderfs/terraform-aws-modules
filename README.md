@@ -11,6 +11,7 @@ Simple &amp; clean modules to use.
 * Cloud 9
 * DocumentDB
     * Cluster
+    * Cluster Instance
 
 
 
