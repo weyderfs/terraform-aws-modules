@@ -4,10 +4,10 @@ Simple &amp; clean modules to use.
 
 ## Contents
 * VPC
+* AWS Backup
     * Vault
     * Plan
     * Selection
-* AWS Backup
 * Cloud 9
 
 
