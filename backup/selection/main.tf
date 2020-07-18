@@ -25,13 +25,13 @@ resource "aws_iam_role_policy_attachment" "policy" {
 
 resource "aws_backup_selection" "selection_by_tag" {
   iam_role_arn = var.selection_by_tag_iam_role_arn
-  name         = var.name_selection_by_tag
+  name         = var.selection_by_tag_name
   plan_id      = var.selection_by_tag_plan_id
 
   selection_tag {
     type  = "STRINGEQUALS"
-    key   = var.selection_tag_key_tag
-    value = var.selection_tag_value_key_tag
+    key   = var.selection_tag_key_label
+    value = var.selection_tag_value
   }
 
 resource "aws_backup_selection" "selection_by_resource" {
