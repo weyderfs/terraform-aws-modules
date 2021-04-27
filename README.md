@@ -12,6 +12,25 @@ Simple &amp; clean modules to use.
 * DocumentDB
     * Cluster
     * Cluster Instance
+* ami
+* cloudfront
+* documentdb
+* dynamodb
+* ec2
+* ecs
+* elasticache
+* iam
+* kms
+* loadbalancer
+* peering
+* rds
+* s3
+* secrets-manager
+* sns
+* sqs
+* subnet
+* vpc
+
 
 
 
