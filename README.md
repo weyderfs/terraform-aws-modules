@@ -38,7 +38,7 @@ Simple &amp; clean modules to use.
 ---------------------------
 :bowtie: **Author**: Weyder
 
-:computer: Cloud Infrastructure Analyst | DevOps Culture | AWS
+:computer: SRE | DevOps Culture | AWS
 
 :round_pushpin: **LinkedIn**: [@weyderfs](https://www.linkedin.com/in/weyderfs)
 
