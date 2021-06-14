@@ -13,7 +13,7 @@ variable "apply_immediately" {
 
 variable "availability_zone" {
     type        = string
-    default     = "us-east-1"
+    default     = ""
     description = "(Optional) The AZ for the RDS instance."
 }
 
