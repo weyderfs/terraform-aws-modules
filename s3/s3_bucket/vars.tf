@@ -1,11 +1,30 @@
 variable "bucket" {
   type        = string
-  description = "buckt s3 name"
+  description = "(Optional, Forces new resource) The name of the bucket. If omitted, Terraform will assign a random, unique name. Must be less than or equal to 63 characters in length."
 }
 
 variable "acl" {
   type        = string
-  description = "private"
+  default     = "private"
+  description = "(Optional) The canned ACL to apply. Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write"
+}
+
+variable "versioning" {
+  type        = map(string)
+  default     = {}
+  description = "Map containing versioning configuration"
+}
+
+variable "lifecycle_rule" {
+  type        = any
+  default     = []
+  description = "List of maps containing configuration of object lifecycle management."
+}
+
+variable "server_side_encryption_configuration" {
+  description = "Map containing server-side encryption configuration."
+  type        = any
+  default     = {}
 }
 
 variable "tags" {
@@ -13,43 +32,8 @@ variable "tags" {
   default = {}
 }
 
-variable "days" {
-  default     = null
-  description = "(Optional) Number of days before the object is to be deleted."
-}
-
-variable "enabled" {
-  type    = bool
-  default = false
-
-}
-
-variable "prefix" {
-  type        = string
-  default     = null
-  description = "(Optional) Object prefix for rule filtering."
-}
-
-variable "id" {
-  type        = string
-  default     = null
-  description = "(Required) Unique identifier for the rule."
-}
-
-variable "sse_algorithm" {
-  type        = string
-  default     = "aws:kms"
-  description = "(required) The server-side encryption algorithm to use. Valid values are AES256 and aws:kms"
-}
-
-variable "kms_master_key_id" {
-  type    = string
-  default = null
-}
-
 variable "policy" {
   type        = string
   default     = ""
   description = "policy - (Optional) A valid bucket policy JSON document."
 }
-
