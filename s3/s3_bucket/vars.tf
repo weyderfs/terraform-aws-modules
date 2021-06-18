@@ -1,50 +1,39 @@
 variable "bucket" {
-    type    = string
-    description = "buckt s3 name"
+  type        = string
+  description = "(Optional, Forces new resource) The name of the bucket. If omitted, Terraform will assign a random, unique name. Must be less than or equal to 63 characters in length."
 }
 
 variable "acl" {
-    type    = string
-    description = "private"
+  type        = string
+  default     = "private"
+  description = "(Optional) The canned ACL to apply. Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write"
 }
 
-variable "policy" {
-    description = "policy - (Optional) A valid bucket policy JSON document."
+variable "versioning" {
+  type        = map(string)
+  default     = {}
+  description = "Map containing versioning configuration"
+}
+
+variable "lifecycle_rule" {
+  type        = any
+  default     = []
+  description = "List of maps containing configuration of object lifecycle management."
+}
+
+variable "server_side_encryption_configuration" {
+  description = "Map containing server-side encryption configuration."
+  type        = any
+  default     = {}
 }
 
 variable "tags" {
-    type        = map(string)
-    default     = {}
+  type    = map(string)
+  default = {}
 }
 
-
-variable "allowed_headers" {
-    type = list
-    default     = null
-    description = "(Optional) Specifies which headers are allowed."
+variable "policy" {
+  type        = string
+  default     = ""
+  description = "policy - (Optional) A valid bucket policy JSON document."
 }
-
-} 
-variable "allowed_methods"{
-    type = list
-    default     = null
-    description = "(Required) Specifies which methods are allowed. Can be GET, PUT, POST, DELETE or HEAD"
-}
-
-} 
-variable "allowed_origins" {
-    type = list
-    default     = null
-    description = "(Required) Specifies which origins are allowed"
-} 
-
-}
-
-variable  "expose_headers"{
-    type = list
-    default     = null
-    description = "(Optional) Specifies expose header in the response."
-}
-
-}  
-   
