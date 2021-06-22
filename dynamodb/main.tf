@@ -7,6 +7,10 @@ resource "aws_dynamodb_table" "dynamodb" {
   hash_key                = var.hash_key         ###PARTITION KEY
   range_key               = var.range_key        ###SORT KEY
   
+  point_in_time_recovery {
+    enabled = var.point_in_time_recovery
+  }
+  
   dynamic "ttl" {
     for_each  = var.ttl
     content {
