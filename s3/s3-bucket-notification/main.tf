@@ -5,6 +5,6 @@ resource "aws_s3_bucket_notification" "sbn" {
     queue_arn       = var.queue_arn
     events          = var.events
     filter_prefix   = var.filter_prefix
-    filter_suffix    = var.filter_suffix    
+    filter_suffix   = var.filter_suffix    
   }
 }

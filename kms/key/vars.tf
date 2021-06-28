@@ -33,3 +33,14 @@ variable "tags" {
     default     = {}
     description = "A map of tags to add to ECS Cluster"
 }
+
+variable "name" {
+    type    = string
+    description = "KMS Alias name"
+}
+
+variable "policy" {
+    type        = string
+    default     = null
+    description = "Policy used by KMS"
+}
