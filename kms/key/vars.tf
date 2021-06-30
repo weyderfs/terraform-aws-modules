@@ -41,6 +41,6 @@ variable "name" {
 
 variable "policy" {
     type        = string
-    default     = null
+    default     = ""
     description = "Policy used by KMS"
 }

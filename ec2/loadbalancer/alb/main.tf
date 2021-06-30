@@ -12,3 +12,23 @@ resource "aws_lb" "alb" {
 
   tags  = var.tags
 }
+
+resource "aws_lb_listener" "listener" {
+  count =  length(var.listeners)
+  load_balancer_arn = aws_lb.alb.arn
+  port              = var.port
+  protocol          = var.protocol
+
+  default_action {
+    type = var.default_action_type
+
+    redirect {
+      port        = var.port_redirect
+      host        = var.host
+      protocol    = var.protocol_redirect
+      status_code = var.status_code
+      query       = var.query
+    }
+  }
+}
+
