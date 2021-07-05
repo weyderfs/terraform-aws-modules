@@ -27,6 +27,12 @@ variable "server_side_encryption_configuration" {
   default     = {}
 }
 
+variable "replication_configuration" {
+  type        = any
+  default     = []
+  description = "List of maps containing configuration of object lifecycle management."
+}
+
 variable "tags" {
   type    = map(string)
   default = {}

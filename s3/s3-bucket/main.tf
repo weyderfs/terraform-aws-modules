@@ -54,11 +54,57 @@ resource "aws_s3_bucket" "s3" {
           bucket_key_enabled = lookup(rule.value, "bucket_key_enabled", null)
 
           dynamic "apply_server_side_encryption_by_default" {
-            for_each = length(keys(lookup(rule.value, "apply_server_side_encryption_by_default", {}))) == 0 ? [] : [
-              lookup(rule.value, "apply_server_side_encryption_by_default", {})]
+            for_each = length(keys(lookup(rule.value, "apply_server_side_encryption_by_default", {}))) == 0 ? [] : [lookup(rule.value, "apply_server_side_encryption_by_default", {})]
             content {
               sse_algorithm     = apply_server_side_encryption_by_default.value.sse_algorithm
               kms_master_key_id = lookup(apply_server_side_encryption_by_default.value, "kms_master_key_id", null)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  dynamic "replication_configuration" {
+    for_each = try(jsondecode(var.replication_configuration), var.replication_configuration)
+    content {
+      role                                     = lookup(replication_configuration.value, "role", null)
+      dynamic "rules" {
+        for_each = try(jsondecode(lookup(replication_configuration.value, "rules", null)), lookup(replication_configuration.value, "rules", null))
+        content {
+          id                          = lookup(rules.value, "id", null)
+          priority                    = lookup(rules.value, "priority", null)
+          status                      = lookup(rules.value, "status", null)
+          dynamic "destination" {
+            for_each = length(keys(lookup(rules.value, "destination", {}))) == 0 ? [] : [lookup(rules.value, "destination", {})]
+            content {
+              account_id         = lookup(destination.value, "account_id", null)
+              bucket             = lookup(destination.value, "bucket", null)
+              replica_kms_key_id = lookup(destination.value, "replica_kms_key_id", null)
+              dynamic "access_control_translation" {
+                for_each = length(keys(lookup(destination.value, "access_control_translation", {}))) == 0 ? [] : [lookup(destination.value, "access_control_translation", {})]
+                content {
+                  owner = lookup(access_control_translation.value, "owner", null)
+                }
+              }
+            }
+          }
+          dynamic "filter" {
+            for_each = length(keys(lookup(rules.value, "filter", {}))) == 0 ? [] : [lookup(rules.value, "filter", {})]
+            content {
+              prefix = lookup(filter.value, "prefix", null)
+              tags   = lookup(filter.value, "tags", null)
+            }
+          }
+          dynamic "source_selection_criteria" {
+            for_each = length(keys(lookup(rules.value, "source_selection_criteria", {}))) == 0 ? [] : [lookup(rules.value, "source_selection_criteria", {})]
+            content {
+              dynamic "sse_kms_encrypted_objects" {
+                for_each = length(keys(lookup(source_selection_criteria.value, "sse_kms_encrypted_objects", {}))) == 0 ? [] : [lookup(source_selection_criteria.value, "sse_kms_encrypted_objects", {})]
+                content {
+                  enabled = sse_kms_encrypted_objects.value.enabled
+                }
+              }
             }
           }
         }
