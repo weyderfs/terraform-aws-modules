@@ -5,7 +5,6 @@ resource "aws_kms_key" "kms" {
   customer_master_key_spec  = var.customer_master_key_spec
   is_enabled                = var.is_enabled
   enable_key_rotation       = var.enable_key_rotation
-
   count                     = var.policy != null ? 1 : 0
   policy                    = var.policy
  

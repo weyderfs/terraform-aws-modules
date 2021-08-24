@@ -94,3 +94,9 @@ variable "cluster_mode_enabled" {
   description = "Enable creation of a native redis cluster."
   default     = false
 }
+
+variable "multi_az_enabled" {
+  type        = bool
+  description = "Enable multi AZ deployment."
+  default     = false
+}

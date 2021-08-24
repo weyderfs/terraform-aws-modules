@@ -4,6 +4,7 @@ resource "aws_elasticache_replication_group" "erg" {
   availability_zones            = var.availability_zones
   engine_version                = var.engine_version
   maintenance_window            = var.maintenance_window
+  multi_az_enabled              = var.multi_az_enabled
   node_type                     = var.node_type
   number_cache_clusters         = var.number_cache_clusters
   parameter_group_name          = var.parameter_group_name
