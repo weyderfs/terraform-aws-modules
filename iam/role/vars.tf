@@ -11,6 +11,11 @@ variable "description"   {
     type        = string 
     description = "The description of them"
 }
+variable "max_session_duration"   {
+    type        = number
+    default     = 1 
+    description = "The duration of session"
+}
 variable "tags" {
     type        = map(string)
     default     = {}
