@@ -15,6 +15,7 @@ resource "aws_db_instance" "db" {
   enabled_cloudwatch_logs_exports     = var.enabled_cloudwatch_logs_exports
   engine                              = var.engine
   engine_version                      = var.engine_version
+  final_snapshot_identifier           = var.final_snapshot_identifier
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   identifier                          = var.identifier
   instance_class                      = var.instance_class
