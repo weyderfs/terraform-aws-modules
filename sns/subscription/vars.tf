@@ -10,10 +10,10 @@ variable "topic_arn" {
 variable "protocol" {
     type = string
     default = "sqs"
-    description = "(Required) The protocol to use. The possible values for this are: sqs, sms, lambda, application, http or https."
+    description = "(Required) The protocol to use. The possible values for this are: sqs, sms, lambda, application, email, http or https."
     validation {
-        condition     = contains(["sqs", "sms", "lambda", "application", "http", "https"], var.protocol)
-        error_message = "The protocol value must be one of: sqs, sms, lambda, application, http or https."
+        condition     = contains(["sqs", "sms", "lambda", "application", "email", "http", "https"], var.protocol)
+        error_message = "The protocol value must be one of: sqs, sms, lambda, application, email, http or https."
     }
 }
 

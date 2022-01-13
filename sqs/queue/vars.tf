@@ -75,6 +75,11 @@ variable "visibility_timeout_seconds" {
     }
 }
 
+variable "sqs_managed_sse_enabled" {
+    type    = bool
+    default = false
+}
+
 variable "tags" {
     type    = map(string)
     default = {}
