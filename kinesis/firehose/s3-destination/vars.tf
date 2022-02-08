@@ -12,43 +12,53 @@ variable "role_arn" {
   default     = ""
   description = "(Required) The ARN of the role that provides access to the source Kinesis stream."
 }
-variable "extended_s3_configuration_role_arn" {
+variable "bucket_arn" {
   type        = string
-  description = "(Required) The ARN of the AWS credentials."
-}
-variable "extended_s3_configuration_bucket_arn" {
-  type        = string
+  default     = null
   description = "(Required) The ARN of the S3 bucket"
 }
-variable "extended_s3_configuration_error_output_prefix" {
+variable "error_output_prefix" {
   type        = string
   default     = null
   description = "(Optional) Prefix added to failed records before writing them to S3. This prefix appears immediately following the bucket name."
 }
-variable "extended_s3_configuration_s3_backup_mode" {
+variable "prefix" {
+  type        = string
+  default     = null
+  description = "(Optional) The YYYY/MM/DD/HH time format prefix is automatically used for delivered S3 files. You can specify an extra prefix to be added in front of the time format prefix. Note that if the prefix ends with a slash, it appears as a folder in the S3 bucket"
+}
+variable "s3_backup_mode" {
   type        = string
   default     = "Disabled"
   description = "(Optional) The Amazon S3 backup mode. Valid values are Disabled and Enabled. Default value is Disabled."
 }
-variable "processing_configuration_enable" {
-  type        = string
-  default     = false
-  description = "(Optional) Enables or disables data processing."
+variable "buffer_size" {
+  type        = number
+  default     = 5
+  description = "(Optional) Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5. We recommend setting SizeInMBs to a value greater than the amount of data you typically ingest into the delivery stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec set SizeInMBs to be 10 MB or higher."
 }
-variable "processors_type" {
+variable "buffer_interval" {
+  type        = number
+  default     = 300
+  description = "(Optional) Buffer incoming data for the specified period of time, in seconds, before delivering it to the destination. The default value is 300."
+}
+
+variable "cloudwatch_enable" {
+  type        = bool
+  default     = true
+  description = "(Optional) Enables or disables the logging. Defaults to false."
+}
+
+variable "log_group_name" {
   type        = string
   default     = ""
-  description = "(Required) The type of processor. Valid Values: Lambda"
+  description = "(Optional) The CloudWatch group name for logging. This value is required if enabled is true."
 }
-variable "parameter_processor_name" {
+
+variable "log_stream_name" {
   type        = string
   default     = ""
-  description = "(Required) Parameter name. Valid Values: LambdaArn, NumberOfRetries, RoleArn, BufferSizeInMBs, BufferIntervalInSeconds"
-}
-variable "parameter_processor_value" {
-  type        = string
-  default     = ""
-  description = "(Required) Parameter value. Must be between 1 and 512 length (inclusive). When providing a Lambda ARN, you should specify the resource version as well."
+  description = "(Optional) The CloudWatch log stream name for logging. This value is required if enabled is true."
 }
 
 variable "tags" {
