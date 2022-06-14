@@ -20,9 +20,10 @@ resource "aws_db_instance" "db" {
   identifier                          = var.identifier
   instance_class                      = var.instance_class
   iops                                = var.iops
+  kms_key_id                          = var.kms_key_id
   license_model                       = var.license_model
-  max_allocated_storage               = var.max_allocated_storage
   maintenance_window                  = var.maintenance_window
+  max_allocated_storage               = var.max_allocated_storage
   monitoring_interval                 = var.monitoring_interval
   monitoring_role_arn                 = var.monitoring_role_arn
   multi_az                            = var.multi_az
@@ -33,6 +34,8 @@ resource "aws_db_instance" "db" {
   performance_insights_enabled        = var.performance_insights_enabled
   performance_insights_kms_key_id     = var.performance_insights_kms_key_id
   port                                = var.port
+  replica_mode                        = var.replica_mode
+  replicate_source_db                 = var.replicate_source_db
   skip_final_snapshot                 = var.skip_final_snapshot
   storage_encrypted                   = var.storage_encrypted
   storage_type                        = var.storage_type

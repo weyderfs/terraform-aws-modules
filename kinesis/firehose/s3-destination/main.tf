@@ -1,8 +1,7 @@
 resource "aws_kinesis_firehose_delivery_stream" "akfds" {
   name        = var.name
   destination = "extended_s3"
-  
- 
+
   extended_s3_configuration {
     role_arn            = var.role_arn
     bucket_arn          = var.bucket_arn
@@ -15,7 +14,10 @@ resource "aws_kinesis_firehose_delivery_stream" "akfds" {
       enabled         = var.cloudwatch_enable
       log_group_name  = var.log_group_name
       log_stream_name = var.log_stream_name
-    }  
-  } 
+    }
+    server_side_encryption = var.server_side_encryption
+    data_format_conversion_configuration = var.data_format_conversion_configuration
+  }
+
   tags = var.tags
 }

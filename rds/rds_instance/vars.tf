@@ -98,7 +98,7 @@ variable "performance_insights_enabled" {
      type        = string
      default     = null
      description = "(Optional) The ARN for the KMS key to encrypt Performance Insights data. When specifying performance_insights_kms_key_id, performance_insights_enabled needs to be set to true. Once KMS key is set, it can never be changed."
- }
+}
 
 variable "backup_retention_period" {
     type        = number
@@ -231,4 +231,22 @@ variable "iam_database_authentication_enabled" {
 variable "maintenance_window" {
     type        = string
     description = "(Optional) The window to perform maintenance in. Syntax: ddd:hh24:mi-ddd:hh24:mi. Eg: Mon:00:00-Mon:03:00."
+}
+
+variable "replica_mode" {
+  description = "Specifies whether the replica is in either mounted or open-read-only mode. This attribute is only supported by Oracle instances. Oracle replicas operate in open-read-only mode unless otherwise specified"
+  type        = string
+  default     = null
+}
+
+variable "replicate_source_db" {
+  description = "Specifies that this resource is a Replicate database, and to use this value as the source database. This correlates to the identifier of another Amazon RDS Database to replicate."
+  type        = string
+  default     = null
+}
+
+variable "kms_key_id" {
+  type        = string
+  default     = null
+  description = "(Optional) The ARN for the KMS encryption key. If creating an encrypted replica, set this to the destination KMS ARN."
 }
