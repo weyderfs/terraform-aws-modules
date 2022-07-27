@@ -12,7 +12,7 @@ variable "ip_address_type" {
 
 variable "idle_timeout" {
     type    = number
-    default = 60
+    default = 300
     description = "(Optional) The time in seconds that the connection is allowed to be idle. Only valid for Load Balancers of type application. Default: 60."
   
 }
