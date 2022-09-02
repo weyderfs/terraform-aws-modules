@@ -31,5 +31,5 @@ Simple &amp; clean modules to use.
 
 :round_pushpin: **LinkedIn**: [@weyderfs](https://www.linkedin.com/in/weyderfs)
 
-:email: **Email**: weyderfs@gmail.com
+:link: **Linktree**: https://linktr.ee/weyderfs
 
