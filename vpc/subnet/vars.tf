@@ -19,3 +19,9 @@ variable "tags" {
     default     = {}
     description = "The maps of tags"
 }
+
+variable "map_public_ip_on_launch" {
+    type    = bool
+    default = false
+    description = "(Optional) Specify true to indicate that instances launched into the subnet should be assigned a public IP address."
+}
