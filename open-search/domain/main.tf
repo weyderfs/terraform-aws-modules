@@ -1,3 +1,8 @@
+resource "random_string" "password" {
+ length = 16
+ special = true
+}
+
 resource "aws_opensearch_domain" "aod" {
   domain_name    = var.domain_name
   engine_version = var.engine_version
