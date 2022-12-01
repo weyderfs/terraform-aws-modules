@@ -4,6 +4,7 @@ Simple &amp; clean modules to use.
 
 ## Contents
 
+- ACM
 - AMI
 - Cloudfront
 - Cloudwatch
