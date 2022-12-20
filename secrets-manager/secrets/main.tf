@@ -1,7 +1,15 @@
-data "aws_secretsmanager_secret" "ass" {
-  name = var.name
+resource "random_password" "arp" {
+  length           = var.random_password_lenght
+  special          = var.random_password_special
+  override_special = var.random_password_override_special
 }
 
-data "aws_secretsmanager_secret_version" "asv" {
-  secret_id = data.aws_secretsmanager_secret.ass.name
+resource "aws_secretsmanager_secret" "asm" {
+  name = var.aws_secretsmanager_secret_name
+  tags = var.aws_secretsmanager_secret_tags
+}
+
+resource "aws_secretsmanager_secret_version" "password" {
+  secret_id     = aws_secretsmanager_secret.asm.name
+  secret_string = random_password.arp.result
 }
