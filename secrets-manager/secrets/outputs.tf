@@ -1,3 +1,3 @@
-output "arn" {
-  value = aws_secretsmanager_secret.asm.arn
+output "id" {
+  value = aws_secretsmanager_secret.asm.id
 }
