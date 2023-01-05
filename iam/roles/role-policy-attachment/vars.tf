@@ -5,7 +5,7 @@ variable "role" {
 }
 
 variable "policy_arn" {
-type        = string
-default     = null
-description = "(Required) - The ARN of the policy you want to apply"
+  type        = string
+  default     = null
+  description = "(Required) - The ARN of the policy you want to apply"
 }

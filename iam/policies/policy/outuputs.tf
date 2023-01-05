@@ -1,11 +1,11 @@
 output "name" {
-    description = "The Policy Name"
-    value       = aws_iam_policy.policy.name
+  description = "The Policy Name"
+  value       = aws_iam_policy.policy.name
 }
 
 output "description" {
-    description = "The porpouse of these policy"
-    value       = aws_iam_policy.policy.description
+  description = "The porpouse of these policy"
+  value       = aws_iam_policy.policy.description
 }
 
 output "arn" {
