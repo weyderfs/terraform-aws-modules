@@ -1,11 +1,11 @@
 resource "aws_security_group" "sg" {
-  name                    = var.name
-  description             = var.description
-  revoke_rules_on_delete  = var.revoke_rules_on_delete
-  vpc_id                  = var.vpc_id
+  name                   = var.name
+  description            = var.description
+  revoke_rules_on_delete = var.revoke_rules_on_delete
+  vpc_id                 = var.vpc_id
 
   dynamic "ingress" {
-    for_each  = var.ingress
+    for_each = var.ingress
     content {
       description = ingress.value.description
       from_port   = ingress.value.from_port
@@ -16,7 +16,7 @@ resource "aws_security_group" "sg" {
   }
 
   dynamic "ingress" {
-    for_each  = var.ingress_sg
+    for_each = var.ingress_sg
     content {
       description     = ingress.value.description
       from_port       = ingress.value.from_port
@@ -24,10 +24,10 @@ resource "aws_security_group" "sg" {
       protocol        = ingress.value.protocol
       security_groups = ingress.value.security_groups
     }
-  }  
+  }
 
   dynamic "egress" {
-    for_each  = var.egress
+    for_each = var.egress
     content {
       description = egress.value.description
       from_port   = egress.value.from_port
