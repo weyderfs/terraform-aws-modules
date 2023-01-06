@@ -1,13 +1,14 @@
 resource "aws_kms_key" "kms" {
-  description               = var.description
-  deletion_window_in_days   = var.deletion_window_in_days
-  key_usage                 = var.key_usage
-  customer_master_key_spec  = var.customer_master_key_spec
-  is_enabled                = var.is_enabled
-  enable_key_rotation       = var.enable_key_rotation
-  count                     = var.policy != null ? 1 : 0
-  policy                    = var.policy
- 
+  count                    = var.policy != null ? 1 : 0
+  customer_master_key_spec = var.customer_master_key_spec
+  deletion_window_in_days  = var.deletion_window_in_days
+  description              = var.description
+  enable_key_rotation      = var.enable_key_rotation
+  is_enabled               = var.is_enabled
+  key_usage                = var.key_usage
+  multi_region             = var.multi_region
+  policy                   = var.policy
+
   tags = var.tags
 
 }
