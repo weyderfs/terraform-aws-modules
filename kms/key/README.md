@@ -33,7 +33,7 @@ No modules.
 | <a name="input_multi_region"></a> [multi\_region](#input\_multi\_region) | (Optional) Indicates whether the KMS key is a multi-Region (true) or regional (false) key. | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | KMS Alias name | `string` | n/a | yes |
 | <a name="input_policy"></a> [policy](#input\_policy) | Policy used by KMS | `string` | `""` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to ECS Cluster | `map(string)` | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags | `map(string)` | `{}` | no |
 
 ## Outputs
 

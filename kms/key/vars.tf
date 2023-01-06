@@ -31,7 +31,7 @@ variable "enable_key_rotation" {
 variable "tags" {
   type        = map(string)
   default     = {}
-  description = "A map of tags to add to ECS Cluster"
+  description = "A map of tags"
 }
 
 variable "name" {
