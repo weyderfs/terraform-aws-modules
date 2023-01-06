@@ -1,9 +1,8 @@
-resource "aws_iam_policy" "policy" {
+resource "aws_iam_policy" "aip" {
   name        = var.name
   path        = var.path
   description = var.description
-
-  policy = file(var.policy)
+  policy      = var.policy
 
   tags = var.tags
 

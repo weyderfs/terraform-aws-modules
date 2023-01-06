@@ -14,6 +14,7 @@ variable "description" {
   description = "(Optional, Forces new resource) Description of the IAM policy."
 }
 variable "policy" {
+  type        = string
   description = "(Required) The policy document. This is a JSON formatted string. "
 }
 variable "tags" {
