@@ -24,7 +24,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_engine_name"></a> [engine\_name](#input\_engine\_name) | The family database engine | `string` | n/a | yes |
-| <a name="input_major_engine_version"></a> [major\_engine\_version](#input\_major\_engine\_version) | The version of the database | `number` | n/a | yes |
+| <a name="input_major_engine_version"></a> [major\_engine\_version](#input\_major\_engine\_version) | The version of the database | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | The name of RDS Option Group | `string` | n/a | yes |
 | <a name="input_option_group_description"></a> [option\_group\_description](#input\_option\_group\_description) | The description, pourpose of the option group | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | The list of Tags | `map(string)` | `{}` | no |

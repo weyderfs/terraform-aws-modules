@@ -12,5 +12,9 @@ resource "aws_db_parameter_group" "dpg" {
     }
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = var.tags
 }
