@@ -7,3 +7,8 @@ variable "tags" {
   default     = {}
   description = "The resource Tags"
 }
+variable "acl" {
+  type        = string
+  default     = "private"
+  description = "(Optional, Conflicts with access_control_policy) The canned ACL to apply to the bucket."
+}
