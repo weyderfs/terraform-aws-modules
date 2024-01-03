@@ -20,6 +20,9 @@ Simple &amp; clean modules to use.
 - RDS
 - Route53
 - S3
+  - Bucket with ACL Policy
+  - Bucket without ACL Policy
+  - Bucket for Static web hosting
 - Secrets Manager
 - SNS
 - SQS
