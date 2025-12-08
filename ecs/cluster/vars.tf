@@ -1,30 +1,59 @@
-variable "ecscluster_name" {
-    type            = string
-    default         = ""
-    description     = "(Required) The name of the cluster (up to 255 letters, numbers, hyphens, and underscores)"
+
+variable "name" {
+  description = "Nome do ECS Cluster"
+  type        = string
 }
 
+variable "enable_container_insights" {
+  description = "Habilita Container Insights no cluster"
+  type        = bool
+  default     = false
+}
+
+# Ex.: ["FARGATE", "FARGATE_SPOT"]
+variable "capacity_providers" {
+  description = "Lista de capacity providers associados ao cluster"
+  type        = list(string)
+  default     = []
+}
+
+# Ex.: [{ capacity_provider = "FARGATE", weight = 1 }]
 variable "default_capacity_provider_strategy" {
-    type            = list(string)
-    default         = []
-    description     = "(Optional) The capacity provider strategy to use by default for the cluster. Can be one or more."
+  description = "Estratégia default do cluster (lista de maps)"
+  type = list(object({
+    capacity_provider = string
+    weight            = optional(number)
+    base              = optional(number)
+  }))
+  default = []
 }
 
-variable "setting_name" {
-    type        = string
-    default     = "containerInsights"
-    description = "(Required) Name of the setting to manage. Valid values: containerInsights."
-
+variable "cluster_configuration" {
+  description = "Configuration of the 'execute command' and cluster logs."
+  type = object({
+    execute_command_configuration = optional(object({
+      kms_key_id       = optional(string)
+      logging          = optional(string)
+      log_configuration = optional(object({
+        cloud_watch_log_group_name     = optional(string)
+        cloud_watch_encryption_enabled = optional(bool)
+      }))
+    }))
+  })
+  default = null
 }
 
-variable "container_insights" {
-    type        = string
-    default     = "enabled"
-    description = "(Required) The value to assign to the setting. Value values are enabled and disabled"
+# Optional — set if you want Service Connect to be the default
+variable "service_connect_defaults" {
+  description = "Namespace default for Service Connect"
+  type = object({
+    namespace = string
+  })
+  default = null
 }
 
 variable "tags" {
-    type        = map(string)
-    default     = {}
-    description = "A map of tags to add to ECS Cluster"
+  description = "Resource Tags"
+  type        = map(string)
+  default     = {}
 }
