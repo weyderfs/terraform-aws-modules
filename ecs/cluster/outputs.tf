@@ -1,10 +1,10 @@
 
 output "cluster_arn" {
-  description = "ARN do ECS Cluster"
+  description = "ECS Cluster ARN"
   value       = aws_ecs_cluster.this.arn
 }
 
 output "cluster_name" {
-  description = "Nome do ECS Cluster"
+  description = "ECS Cluster Name"
   value       = aws_ecs_cluster.this.name
 }

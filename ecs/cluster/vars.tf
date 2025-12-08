@@ -1,25 +1,25 @@
 
 variable "name" {
-  description = "Nome do ECS Cluster"
+  description = "ECS Cluster Name"
   type        = string
 }
 
 variable "enable_container_insights" {
-  description = "Habilita Container Insights no cluster"
+  description = "Enable Container Insights on the cluster"
   type        = bool
   default     = false
 }
 
 # Ex.: ["FARGATE", "FARGATE_SPOT"]
 variable "capacity_providers" {
-  description = "Lista de capacity providers associados ao cluster"
+  description = "List of capacity providers associated with the cluster."
   type        = list(string)
   default     = []
 }
 
 # Ex.: [{ capacity_provider = "FARGATE", weight = 1 }]
 variable "default_capacity_provider_strategy" {
-  description = "Estratégia default do cluster (lista de maps)"
+  description = "Default cluster strategy (list of maps)"
   type = list(object({
     capacity_provider = string
     weight            = optional(number)
@@ -29,7 +29,7 @@ variable "default_capacity_provider_strategy" {
 }
 
 variable "cluster_configuration" {
-  description = "Configuration of the 'execute command' and cluster logs."
+  description = "Configuration of the execute command and cluster logs."
   type = object({
     execute_command_configuration = optional(object({
       kms_key_id       = optional(string)
