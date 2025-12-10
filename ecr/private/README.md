@@ -1,4 +1,18 @@
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
+
 ## Resources
 
 | Name | Type |
@@ -10,6 +24,7 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_encryption_type"></a> [encryption\_type](#input\_encryption\_type) | Encryption type: AES256 or KMS. If kms\_key\_arn is provided, set to KMS. | `string` | `"AES256"` | no |
+| <a name="input_force_delete"></a> [force\_delete](#input\_force\_delete) | If true, forces deletion of the repository even if it contains images. | `bool` | `false` | no |
 | <a name="input_image_tag_mutability"></a> [image\_tag\_mutability](#input\_image\_tag\_mutability) | Controls image tag mutability: MUTABLE or IMMUTABLE. | `string` | `"IMMUTABLE"` | no |
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | Optional KMS key ARN for repository encryption (if null, ECR uses AES-256). | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the ECR repository. | `string` | n/a | yes |

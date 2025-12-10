@@ -10,6 +10,12 @@ variable "image_tag_mutability" {
   default     = "IMMUTABLE"
 }
 
+variable "force_delete" {
+  description = "If true, forces deletion of the repository even if it contains images."
+  type        = bool
+  default     = false
+}
+
 variable "scan_on_push" {
   description = "Enable vulnerability scanning on image push."
   type        = bool
