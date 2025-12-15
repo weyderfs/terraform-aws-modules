@@ -12,6 +12,9 @@ Simple &amp; clean modules to use.
 - DynamoDB
 - EC2
 - ECS
+  - Cluster
+- ECR
+  - Private Registry
 - EKS
 - Elasticache
 - IAM
@@ -29,11 +32,8 @@ Simple &amp; clean modules to use.
 - VPC
 
 ---------------------------
-:bowtie: **Author**: Weyder
 
 :computer: SRE | DevOps Culture | AWS
+:round_pushpin: **LinkedIn of Maintainer**: [@weyderfs](https://www.linkedin.com/in/weyderfs)
 
-:round_pushpin: **LinkedIn**: [@weyderfs](https://www.linkedin.com/in/weyderfs)
-
-:link: **Linktree**: https://linktr.ee/weyderfs
 
