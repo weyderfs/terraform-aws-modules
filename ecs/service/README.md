@@ -46,8 +46,8 @@
 | <a name="output_input_load_balancer"></a> [input\_load\_balancer](#output\_input\_load\_balancer) | Load balancer block provided via module input (echo for composition). |
 | <a name="output_input_network_configuration"></a> [input\_network\_configuration](#output\_input\_network\_configuration) | Network configuration block provided via module input (echo for composition). |
 | <a name="output_launch_type"></a> [launch\_type](#output\_launch\_type) | Launch type configured for the service (FARGATE or EC2), if defined. |
-| <a name="output_lb_container_name"></a> [lb\_container\_name](#output\_lb\_container\_name) | Container name mapped by the load balancer (filtered by configured container\_name). |
-| <a name="output_lb_container_port"></a> [lb\_container\_port](#output\_lb\_container\_port) | Container port mapped by the load balancer (filtered by configured container\_name). |
+| <a name="output_lb_container_name"></a> [lb\_container\_name](#output\_lb\_container\_name) | Container name mapped in the load balancer (first entry if multiple). |
+| <a name="output_lb_container_port"></a> [lb\_container\_port](#output\_lb\_container\_port) | Container port mapped in the load balancer (first entry if multiple). |
 | <a name="output_load_balancer"></a> [load\_balancer](#output\_load\_balancer) | Load balancer block(s) attached to the ECS Service (target group ARN, container name/port). |
 | <a name="output_network_security_groups"></a> [network\_security\_groups](#output\_network\_security\_groups) | Security Groups associated with the service (awsvpc network mode). |
 | <a name="output_network_subnets"></a> [network\_subnets](#output\_network\_subnets) | Subnets associated with the service (awsvpc network mode). |
@@ -58,6 +58,6 @@
 | <a name="output_service_id"></a> [service\_id](#output\_service\_id) | ID of the ECS Service (commonly same as ARN). |
 | <a name="output_service_name"></a> [service\_name](#output\_service\_name) | Name of the ECS Service. |
 | <a name="output_service_reference"></a> [service\_reference](#output\_service\_reference) | Convenient reference in the form of cluster\_arn/service\_name. |
-| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | Target Group ARN used by the service for the configured container. |
+| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | Target Group ARN used by the service (first entry if multiple). |
 | <a name="output_task_definition"></a> [task\_definition](#output\_task\_definition) | Task definition (ARN or family:revision) currently set on the service. |
 <!-- END_TF_DOCS -->
