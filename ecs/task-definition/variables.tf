@@ -5,10 +5,11 @@ variable "family" {
 }
 
 variable "container_definitions" {
-  description = "(Optional) A single valid JSON string of container definitions. If empty, we will jsonencode(var.containers)."
   type        = string
-  default     = ""
+  description = "Raw JSON for container_definitions. If null/empty, jsonencode(var.containers) will be used."
+  default     = null
 }
+
 
 variable "containers" {
   description = "(Optional) Structured container definitions to be jsonencoded when container_definitions is empty."
@@ -27,11 +28,22 @@ variable "containers" {
       name  = string
       value = string
     })), [])
+    secrets = optional(list(object({
+      name      = string
+      valueFrom = string
+    })), [])    
     logConfiguration = optional(object({
       logDriver = string
       options   = optional(map(string), {})
     }), null)
-  }))
+    healthCheck = optional(object({
+    command     = list(string)
+    interval    = optional(number, 30)
+    timeout     = optional(number, 5)
+    retries     = optional(number, 3)
+    startPeriod = optional(number)
+    }), null)
+}))
   default = []
 }
 

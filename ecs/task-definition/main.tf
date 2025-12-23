@@ -10,7 +10,10 @@ resource "aws_ecs_task_definition" "etd" {
   task_role_arn      = var.task_role_arn
 
   # Container_definitions: Accepts direct JSON or jsonencoded from var.containers.
-  container_definitions = var.container_definitions != "" ? var.container_definitions : jsonencode(var.containers)
+  container_definitions = (
+    var.container_definitions != null &&
+    var.container_definitions != ""
+  ) ? var.container_definitions : jsonencode(var.containers)
 
   # Dynamic volume: only created if volume_name is not null.
   dynamic "volume" {
