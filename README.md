@@ -7,12 +7,15 @@ Simple &amp; clean modules to use.
 - ACM
 - AMI
 - Cloudfront
+  - Log Group
 - Cloudwatch
 - Dms
 - DynamoDB
 - EC2
 - ECS
   - Cluster
+  - Task Definition
+  - Service
 - ECR
   - Private Registry
 - EKS
