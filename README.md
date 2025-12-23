@@ -12,6 +12,13 @@ Simple &amp; clean modules to use.
 - Dms
 - DynamoDB
 - EC2
+  - Auto Scaling
+  - ~ELB~ (Going to EOF)
+  - Loadbalancer
+    - ALB
+    - ELB
+    - NLB
+  - Security Group
 - ECS
   - Cluster
   - Task Definition
