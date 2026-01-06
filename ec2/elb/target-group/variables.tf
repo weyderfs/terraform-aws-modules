@@ -72,6 +72,12 @@ variable "health_check_unhealthy_threshold" {
   default     = 2
 }
 
+variable "health_check_port" {
+  description = "Port for health check. Use 'traffic-port' to use the port of the target group."
+  type        = string
+  default     = "traffic-port"
+}
+
 variable "tags" {
   description = "Tags to apply to the Target Group"
    type        = map(string)

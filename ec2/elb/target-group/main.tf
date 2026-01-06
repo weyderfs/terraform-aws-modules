@@ -13,6 +13,7 @@ resource "aws_lb_target_group" "altg" {
     timeout             = var.health_check_timeout
     healthy_threshold   = var.health_check_healthy_threshold
     unhealthy_threshold = var.health_check_unhealthy_threshold
+    port                = var.health_check_port
   }
 
   tags = var.tags
