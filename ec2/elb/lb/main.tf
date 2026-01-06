@@ -19,8 +19,23 @@ resource "aws_lb_listener" "http" {
   protocol          = var.http_protocol
 
   default_action {
-    type             = var.http_default_action_type
-    target_group_arn = var.http_target_group_arn
+    type = var.http_default_action_type
+
+    # When type == "redirect", emit the redirect block
+    dynamic "redirect" {
+      for_each = var.http_default_action_type == "redirect" ? [1] : []
+      content {
+        port        = var.http_redirect_port
+        protocol    = var.http_redirect_protocol
+        status_code = var.http_redirect_status_code
+        host        = var.http_redirect_host
+        path        = var.http_redirect_path
+        query       = var.http_redirect_query
+      }
+    }
+
+    # When type == "forward", set target_group_arn; otherwise omit it
+    target_group_arn = var.http_default_action_type == "forward" ? var.http_target_group_arn : null
   }
 }
 

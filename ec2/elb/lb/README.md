@@ -18,6 +18,12 @@
 | <a name="input_http_default_action_type"></a> [http\_default\_action\_type](#input\_http\_default\_action\_type) | Default action type for HTTP listener | `string` | `"forward"` | no |
 | <a name="input_http_port"></a> [http\_port](#input\_http\_port) | HTTP listener port | `number` | `80` | no |
 | <a name="input_http_protocol"></a> [http\_protocol](#input\_http\_protocol) | HTTP listener protocol | `string` | `"HTTP"` | no |
+| <a name="input_http_redirect_host"></a> [http\_redirect\_host](#input\_http\_redirect\_host) | Host for redirect (use '#{host}' to preserve) | `string` | `"#{host}"` | no |
+| <a name="input_http_redirect_path"></a> [http\_redirect\_path](#input\_http\_redirect\_path) | Path for redirect (use '/#{path}' to preserve) | `string` | `"/#{path}"` | no |
+| <a name="input_http_redirect_port"></a> [http\_redirect\_port](#input\_http\_redirect\_port) | Redirect port for HTTP listener | `string` | `"443"` | no |
+| <a name="input_http_redirect_protocol"></a> [http\_redirect\_protocol](#input\_http\_redirect\_protocol) | Redirect protocol for HTTP listener | `string` | `"HTTPS"` | no |
+| <a name="input_http_redirect_query"></a> [http\_redirect\_query](#input\_http\_redirect\_query) | Query for redirect (use '#{query}' to preserve) | `string` | `"#{query}"` | no |
+| <a name="input_http_redirect_status_code"></a> [http\_redirect\_status\_code](#input\_http\_redirect\_status\_code) | Redirect status code | `string` | `"HTTP_301"` | no |
 | <a name="input_http_target_group_arn"></a> [http\_target\_group\_arn](#input\_http\_target\_group\_arn) | Target group ARN for HTTP listener default action | `string` | `null` | no |
 | <a name="input_https_default_action_type"></a> [https\_default\_action\_type](#input\_https\_default\_action\_type) | Default action type for HTTPS listener | `string` | `"forward"` | no |
 | <a name="input_https_port"></a> [https\_port](#input\_https\_port) | HTTPS listener port | `number` | `443` | no |

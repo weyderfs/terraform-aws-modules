@@ -88,7 +88,62 @@ variable "http_target_group_arn" {
   description = "Target group ARN for HTTP listener default action"
   type        = string
   default     = null
+
+  validation {
+    condition     = lower(var.http_default_action_type) != "forward" || (lower(var.http_default_action_type) == "forward" && var.http_target_group_arn != null)
+    error_message = "When http_default_action_type is 'forward', http_target_group_arn must be set."
+  }
 }
+
+
+
+# --- HTTP redirect settings (used when http_default_action_type == "redirect") ---
+variable "http_redirect_port" {
+  description = "Redirect port for HTTP listener"
+  type        = string
+  default     = "443"
+}
+
+variable "http_redirect_protocol" {
+  description = "Redirect protocol for HTTP listener"
+  type        = string
+  default     = "HTTPS"
+
+  validation {
+    condition     = upper(var.http_redirect_protocol) == "HTTPS"
+    error_message = "Only 'HTTPS' is supported for redirect protocol in this module."
+  }
+}
+
+variable "http_redirect_status_code" {
+  description = "Redirect status code"
+  type        = string
+  default     = "HTTP_301"
+
+  validation {
+    condition     = contains(["HTTP_301", "HTTP_302"], upper(var.http_redirect_status_code))
+    error_message = "http_redirect_status_code must be one of: HTTP_301, HTTP_302."
+  }
+}
+
+variable "http_redirect_host" {
+  description = "Host for redirect (use '#{host}' to preserve)"
+  type        = string
+  default     = "#{host}"
+}
+
+variable "http_redirect_path" {
+  description = "Path for redirect (use '/#{path}' to preserve)"
+  type        = string
+  default     = "/#{path}"
+}
+
+variable "http_redirect_query" {
+  description = "Query for redirect (use '#{query}' to preserve)"
+  type        = string
+  default     = "#{query}"
+}
+
 
 # --- HTTPS listener settings (port 443) ---
 variable "enable_https" {
@@ -137,8 +192,15 @@ variable "https_default_action_type" {
   }
 }
 
+
 variable "https_target_group_arn" {
   description = "Target group ARN for HTTPS listener default action"
   type        = string
   default     = null
+
+  validation {
+    condition     = lower(var.https_default_action_type) != "forward" || (lower(var.https_default_action_type) == "forward" && var.https_target_group_arn != null)
+    error_message = "When https_default_action_type is 'forward', https_target_group_arn must be set."
+  }
 }
+
