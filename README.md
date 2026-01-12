@@ -30,6 +30,9 @@ Simple &amp; clean modules to use.
 - IAM
 - Kinesis
 - KMS
+  - Alias
+  - Key
+  - Key + Alias
 - RDS
 - Route53
 - S3
