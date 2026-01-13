@@ -18,7 +18,6 @@ Simple &amp; clean modules to use.
     - ALB
     - ELB
     - NLB
-  - Security Group
 - ECS
   - Cluster
   - Task Definition
@@ -43,7 +42,17 @@ Simple &amp; clean modules to use.
 - SNS
 - SQS
 - VPC
-
+  - elastic-ip
+  - endpoint
+  - endpoint-service
+  - internet-gateway
+  - nat-gateway
+  - peering
+  - route-table
+  - security-group
+  - subnet
+  - transit-gateway
+  - vpc creation
 ---------------------------
 
 :computer: SRE | DevOps Culture | AWS
