@@ -10,6 +10,15 @@ variable "image_tag_mutability" {
   default     = "IMMUTABLE"
 }
 
+variable "image_tag_mutability_exclusion_filter" {
+  description = "Optional list of tag exclusion filters from immutability. Each item supports: filter_type and filter."
+  type = list(object({
+    filter_type = string
+    filter      = string
+  }))
+  default = []
+}
+
 variable "force_delete" {
   description = "If true, forces deletion of the repository even if it contains images."
   type        = bool
@@ -19,7 +28,7 @@ variable "force_delete" {
 variable "scan_on_push" {
   description = "Enable vulnerability scanning on image push."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "encryption_type" {
