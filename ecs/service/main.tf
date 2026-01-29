@@ -41,6 +41,17 @@ resource "aws_ecs_service" "ese" {
     }
   }
 
+  # Service discovery (Cloud Map)
+  dynamic "service_registries" {
+    for_each = var.service_registries
+    content {
+      registry_arn   = service_registries.value.registry_arn
+      container_name = try(service_registries.value.container_name, null)
+      container_port = try(service_registries.value.container_port, null)
+      port           = try(service_registries.value.port, null)
+    }
+  }
+
   # Placement strategy (opcional)
   dynamic "ordered_placement_strategy" {
     for_each = var.placement_strategy_type != null ? [1] : []

@@ -1,3 +1,103 @@
+# AWS ECS Service Module
+
+Terraform module to create and manage ECS Services with optional Service Discovery (Cloud Map) and load balancer integration.
+
+## Table of Contents
+
+- [Usage](#usage)
+	- [Terragrunt Example](#terragrunt-example)
+	- [Terraform Example](#terraform-example)
+- [Resources](#resources)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [Notes](#notes)
+
+## Usage
+
+### Terragrunt Example
+
+```hcl
+terraform {
+	source = "[...]"
+}
+
+dependency "ecs_cluster" {
+	config_path = "../../cluster/myapp"
+}
+
+dependency "task_definition" {
+	config_path = "../../task-definition/myapp"
+}
+
+dependency "cloudmap" {
+	config_path = "../../../cloudmap/service-discovery/myapp"
+}
+
+inputs = {
+	name                = "myapp-service"
+	cluster_arn         = dependency.ecs_cluster.outputs.cluster_arn
+	task_definition_arn = dependency.task_definition.outputs.task_definition_arn
+
+	desired_count       = 2
+	scheduling_strategy = "REPLICA"
+	launch_type         = "FARGATE"
+	platform_version    = "LATEST"
+
+	network_configuration = {
+		subnets         = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-yyyyyyyyyyyyyyyyy"]
+		security_groups = ["sg-xxxxxxxxxxxxxxxxx"]
+	}
+
+	service_registries = [
+		{
+			registry_arn   = dependency.cloudmap.outputs.services["backend-api"].arn
+			container_name = "backend-container"
+			container_port = 8080
+		}
+	]
+
+	tags = {
+		environment = "production"
+		project     = "myapp"
+	}
+}
+```
+
+### Terraform Example
+
+```hcl
+module "ecs_service" {
+	source = "[...]"
+
+	name                = "myapp-service"
+	cluster_arn         = aws_ecs_cluster.main.arn
+	task_definition_arn = aws_ecs_task_definition.main.arn
+
+	desired_count       = 2
+	scheduling_strategy = "REPLICA"
+	launch_type         = "FARGATE"
+	platform_version    = "LATEST"
+
+	network_configuration = {
+		subnets         = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-yyyyyyyyyyyyyyyyy"]
+		security_groups = ["sg-xxxxxxxxxxxxxxxxx"]
+	}
+
+	service_registries = [
+		{
+			registry_arn   = aws_service_discovery_service.backend.arn
+			container_name = "backend-container"
+			container_port = 8080
+		}
+	]
+
+	tags = {
+		environment = "production"
+		project     = "myapp"
+	}
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Resources
 
@@ -27,6 +127,7 @@
 | <a name="input_placement_strategy_type"></a> [placement\_strategy\_type](#input\_placement\_strategy\_type) | Type of placement strategy (bin pack, random, spread). | `string` | `null` | no |
 | <a name="input_platform_version"></a> [platform\_version](#input\_platform\_version) | Fargate platform version (e.g., LATEST). | `string` | `null` | no |
 | <a name="input_scheduling_strategy"></a> [scheduling\_strategy](#input\_scheduling\_strategy) | Scheduling strategy (REPLICA or DAEMON). | `string` | `"REPLICA"` | no |
+| <a name="input_service_registries"></a> [service\_registries](#input\_service\_registries) | Service discovery registries (Cloud Map) for the service. | <pre>list(object({<br/>    registry_arn   = string<br/>    container_name = optional(string)<br/>    container_port = optional(number)<br/>    port           = optional(number)<br/>  }))</pre> | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags list. | `map(string)` | `{}` | no |
 | <a name="input_task_definition_arn"></a> [task\_definition\_arn](#input\_task\_definition\_arn) | ARN or family:revision of Task Definition. | `string` | n/a | yes |
 
@@ -60,4 +161,11 @@
 | <a name="output_service_reference"></a> [service\_reference](#output\_service\_reference) | Convenient reference in the form of cluster\_arn/service\_name. |
 | <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | Target Group ARN used by the service (first entry if multiple). |
 | <a name="output_task_definition"></a> [task\_definition](#output\_task\_definition) | Task definition (ARN or family:revision) currently set on the service. |
+
+## Notes
+
+- For Fargate, `network_configuration` is required and must use private or public subnets with `awsvpc`.
+- Use either `launch_type` or `capacity_provider_strategy` (not both) to avoid conflicts.
+- When using Cloud Map, ensure `service_registries.container_name` matches the container name in the task definition.
+- If using `load_balancer`, set `health_check_grace_period_seconds` to allow task warm‑up.
 <!-- END_TF_DOCS -->

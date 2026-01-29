@@ -68,6 +68,17 @@ variable "load_balancer" {
   default = null
 }
 
+variable "service_registries" {
+  description = "Service discovery registries (Cloud Map) for the service."
+  type = list(object({
+    registry_arn   = string
+    container_name = optional(string)
+    container_port = optional(number)
+    port           = optional(number)
+  }))
+  default = []
+}
+
 variable "placement_strategy_type" {
   description = "Type of placement strategy (bin pack, random, spread)."
   type        = string
