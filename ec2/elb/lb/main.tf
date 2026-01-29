@@ -2,53 +2,52 @@ resource "aws_lb" "al" {
   name               = var.name
   internal           = var.internal
   load_balancer_type = var.load_balancer_type
-  security_groups    = var.security_group_ids
+  security_groups    = lower(var.load_balancer_type) == "application" ? var.security_group_ids : null
   subnets            = var.subnet_ids
 
   enable_deletion_protection = var.enable_deletion_protection
-  idle_timeout               = var.idle_timeout
+  idle_timeout               = lower(var.load_balancer_type) == "application" ? var.idle_timeout : null
 
   tags = var.tags
-
 }
 
-resource "aws_lb_listener" "http" {
-  count             = var.enable_http ? 1 : 0
+locals {
+  listeners_map = {
+    for l in var.listeners : l.name => l
+  }
+}
+resource "aws_lb_listener" "this" {
+  for_each         = local.listeners_map
   load_balancer_arn = aws_lb.al.arn
-  port              = var.http_port
-  protocol          = var.http_protocol
+  port              = each.value.port
+  protocol          = each.value.protocol
+  ssl_policy        = try(each.value.ssl_policy, null)
+  certificate_arn   = try(each.value.certificate_arn, null)
+  alpn_policy       = try(each.value.alpn_policy, null)
 
   default_action {
-    type = var.http_default_action_type
+    type             = each.value.default_action.type
+    target_group_arn = try(each.value.default_action.target_group_arn, null)
 
-    # When type == "redirect", emit the redirect block
     dynamic "redirect" {
-      for_each = var.http_default_action_type == "redirect" ? [1] : []
+      for_each = try(each.value.default_action.redirect, null) != null ? [each.value.default_action.redirect] : []
       content {
-        port        = var.http_redirect_port
-        protocol    = var.http_redirect_protocol
-        status_code = var.http_redirect_status_code
-        host        = var.http_redirect_host
-        path        = var.http_redirect_path
-        query       = var.http_redirect_query
+        port        = redirect.value.port
+        protocol    = redirect.value.protocol
+        status_code = redirect.value.status_code
+        host        = try(redirect.value.host, null)
+        path        = try(redirect.value.path, null)
+        query       = try(redirect.value.query, null)
       }
     }
 
-    # When type == "forward", set target_group_arn; otherwise omit it
-    target_group_arn = var.http_default_action_type == "forward" ? var.http_target_group_arn : null
-  }
-}
-
-resource "aws_lb_listener" "https" {
-  count             = var.enable_https ? 1 : 0
-  load_balancer_arn = aws_lb.al.arn
-  port              = var.https_port
-  protocol          = var.https_protocol
-  ssl_policy        = var.ssl_policy
-  certificate_arn   = var.certificate_arn
-
-  default_action {
-    type             = var.https_default_action_type
-    target_group_arn = var.https_target_group_arn
+    dynamic "fixed_response" {
+      for_each = try(each.value.default_action.fixed_response, null) != null ? [each.value.default_action.fixed_response] : []
+      content {
+        content_type = fixed_response.value.content_type
+        message_body = try(fixed_response.value.message_body, null)
+        status_code  = fixed_response.value.status_code
+      }
+    }
   }
 }
