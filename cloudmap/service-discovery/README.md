@@ -75,13 +75,6 @@ inputs = {
       health_check_custom_config = {}
     }
 
-
-
-
-
-
-
-
 ### Terraform Example
 
 ```hcl
