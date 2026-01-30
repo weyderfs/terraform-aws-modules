@@ -1,4 +1,89 @@
+# AWS ECR Private Repository Module
+
+Terraform module to create a private Amazon ECR repository with encryption, immutability, and image scanning configuration.
+
+## Table of Contents
+
+- [Features](#features)
+- [Usage](#usage)
+	- [Terragrunt Example](#terragrunt-example)
+	- [Terraform Example](#terraform-example)
+- [Encryption](#encryption)
+- [Tag Mutability](#tag-mutability)
+- [Image Scanning](#image-scanning)
+- [Requirements](#requirements)
+- [Providers](#providers)
+- [Resources](#resources)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+- [Notes](#notes)
+
+## Features
+
+- Creates a private ECR repository with configurable name and tags
+- Supports AES-256 or KMS encryption
+- Optional image tag mutability and exclusion filters
+- Optional force delete for repositories with images
+- Enables image vulnerability scanning on push
+
+## Usage
+
+### Terragrunt Example
+
+```hcl
+terraform {
+	source = "[...]"
+}
+
+inputs = {
+	name          = "myapp"
+	scan_on_push  = true
+	force_delete  = false
+	encryption_type = "AES256"
+	image_tag_mutability = "IMMUTABLE"
+
+	tags = {
+        # TAGs here...
+	}
+}
+```
+
+### Terraform Example
+
+```hcl
+module "ecr_private" {
+	source = "[...]"
+
+	name                 = "myapp"
+	scan_on_push         = true
+	force_delete         = false
+	encryption_type      = "AES256"
+	image_tag_mutability = "IMMUTABLE"
+
+	tags = {
+		Environment = "production"
+		Project     = "myapp"
+	}
+}
+```
+
+## Encryption
+
+- `AES256` uses the default ECR-managed encryption
+- `KMS` uses a customer-managed CMK when `kms_key_arn` is provided
+
+## Tag Mutability
+
+- `MUTABLE` allows overwriting tags
+- `IMMUTABLE` prevents overwriting tags (recommended for release pipelines)
+- Use `image_tag_mutability_exclusion_filter` to allow specific tags to remain mutable
+
+## Image Scanning
+
+Enable `scan_on_push` to run vulnerability scanning whenever a new image is pushed.
+
 <!-- BEGIN_TF_DOCS -->
+
 ## Resources
 
 | Name | Type |
@@ -26,4 +111,10 @@
 | <a name="output_repository_name"></a> [repository\_name](#output\_repository\_name) | Name of the ECR repository. |
 | <a name="output_repository_url"></a> [repository\_url](#output\_repository\_url) | Repository URI used to tag/pull images (ACCOUNT\_ID.dkr.ecr.REGION.amazonaws.com/NAME). |
 | <a name="output_tags"></a> [tags](#output\_tags) | Tags applied to the ECR repository. |
+
 <!-- END_TF_DOCS -->
+
+## Notes
+
+- Enabling scan on push can increase image push time
+- Immutable tags are recommended for production release pipelines

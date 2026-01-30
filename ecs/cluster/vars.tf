@@ -10,6 +10,17 @@ variable "enable_container_insights" {
   default     = false
 }
 
+variable "container_insights_level" {
+  description = "Level of Container Insights (disabled, enabled, enhanced)"
+  type        = string
+  default     = "disabled"
+  
+  validation {
+    condition     = contains(["disabled", "enabled", "enhanced"], var.container_insights_level)
+    error_message = "Must be one of: disabled, enabled, enhanced"
+  }
+}
+
 # Ex.: ["FARGATE", "FARGATE_SPOT"]
 variable "capacity_providers" {
   description = "List of capacity providers associated with the cluster."

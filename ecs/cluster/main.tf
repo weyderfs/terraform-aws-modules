@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "this" {
 
   setting {
     name  = "containerInsights"
-    value = var.enable_container_insights ? "enabled" : "disabled"
+    value = var.enable_container_insights ? var.container_insights_level : "disabled"
   }
 
   dynamic "configuration" {
