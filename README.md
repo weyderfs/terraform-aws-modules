@@ -19,7 +19,7 @@
 
 ---
 
-## 🎯 About
+## About
 
 This repository contains a **comprehensive collection of Terraform modules** for AWS services, organized by service category. Each module is designed to be:
 
@@ -31,7 +31,7 @@ This repository contains a **comprehensive collection of Terraform modules** for
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Repository Organization
 
@@ -65,7 +65,7 @@ module "resource_name" {
   # Your configuration here
 }
 ```
-## 📦 Prerequisites
+## Prerequisites
 
 Before using these modules, ensure you have:
 
@@ -95,7 +95,7 @@ provider "aws" {
 
 ---
 
-## 📚 Available Modules
+## Available Modules
 
 - **[ACM](#acm)**
   - [Certificate](./acm/certificate/)
@@ -186,7 +186,7 @@ provider "aws" {
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! If you'd like to contribute:
 
@@ -206,7 +206,7 @@ Contributions are welcome! If you'd like to contribute:
 
 ---
 
-## 💬 Support
+## Support
 
 If you encounter issues or have questions:
 

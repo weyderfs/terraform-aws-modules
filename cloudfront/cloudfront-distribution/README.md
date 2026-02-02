@@ -1,22 +1,18 @@
 # AWS CloudFront Distribution Module
 
-Módulo Terraform para gerenciar distribuições CloudFront da AWS com suporte a múltiplos origins, cache behaviors, validação de certificados SSL/TLS e geo-restrições.
+Terraform module to manage AWS CloudFront distributions with support for multiple origins, cache behaviors, SSL/TLS certificate validation, and geo-restrictions.
 
 ## Table of Contents
 
 - [Features](#features)
 - [Usage](#usage)
-  - [Terraform Example](#terraform-example)
-    - [1. Distribuição Básica com S3](#1-distribuição-básica-com-s3)
-    - [2. Distribuição com Certificado ACM](#2-distribuição-com-certificado-acm)
-    - [3. Distribuição com Múltiplos Origins e Cache Behaviors](#3-distribuição-com-múltiplos-origins-e-cache-behaviors)
   - [Terragrunt Example](#terragrunt-example)
-    - [1. Estrutura de Diretórios](#1-estrutura-de-diretórios)
-    - [2. Arquivo terragrunt.hcl](#2-arquivo-terragruntcl)
-    - [3. Variáveis e Deploy](#3-variáveis-e-deploy)
+  - [Terraform Example](#terraform-example)
+    - [1. Basic Distribution with S3](#1-basic-distribution-with-s3)
+    - [2. Distribution with ACM Certificate](#2-distribution-with-acm-certificate)
+    - [3. Distribution with Multiple Origins and Cache Behaviors](#3-distribution-with-multiple-origins-and-cache-behaviors)
 - [Requirements](#requirements)
 - [Providers](#providers)
-- [Modules](#modules)
 - [Resources](#resources)
 - [Inputs](#inputs)
 - [Outputs](#outputs)
@@ -24,22 +20,81 @@ Módulo Terraform para gerenciar distribuições CloudFront da AWS com suporte a
 
 ## Features
 
-- Suporte a múltiplos origins (S3, custom, ALB, etc.)
-- Cache policies modernizadas (`cache_policy_id` e `origin_request_policy_id`)
-- Fallback para `forwarded_values` (deprecated, mas suportado)
-- SSL/TLS com ACM, IAM ou certificado padrão CloudFront
-- Múltiplos cache behaviors com path patterns customizados
-- Geo-restrições (whitelist/blacklist)
-- Logging para S3
-- Custom headers e origin access control
-- IPv6 habilitado por padrão
-- Tags e validações de entrada
+- Support for multiple origins (S3, custom, ALB, etc.)
+- Modern cache policies (`cache_policy_id` and `origin_request_policy_id`)
+- Fallback to `forwarded_values` (deprecated, but supported)
+- SSL/TLS with ACM, IAM, or default CloudFront certificate
+- Multiple cache behaviors with custom path patterns
+- Geo-restrictions (whitelist/blacklist)
+- S3 logging
+- Custom headers and origin access control
+- IPv6 enabled by default
+- Tags and input validation
 
 ## Usage
 
+### Terragrunt Example
+
+```hcl
+include "root" {
+  path = find_in_parent_folders()
+}
+
+terraform {
+  source = "[...]"
+}
+
+dependency "acm" {
+  config_path = "../acm/certificate"
+  mock_outputs = {
+    arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxxxx"
+  }
+}
+
+inputs = {
+  origins = [
+    {
+      domain_name              = "my-bucket.s3.amazonaws.com"
+      origin_id                = "s3-origin"
+      origin_access_control_id = aws_cloudfront_origin_access_control.s3.id
+    }
+  ]
+
+  aliases             = ["cdn.example.com"]
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "CloudFront production distribution"
+  default_root_object = "index.html"
+
+  default_cache_behavior = {
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "s3-origin"
+    viewer_protocol_policy = "redirect-to-https"
+    cache_policy_id        = "0000000-00000-0000-0000-00000000000"
+    compress               = true
+  }
+
+  viewer_certificate = {
+    acm_certificate_arn      = dependency.acm.outputs.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
+  }
+
+  price_class = "PriceClass_200"
+
+  tags = {
+    Environment = "production"
+    ManagedBy   = "Terragrunt"
+    Team        = "platform"
+  }
+}
+```
+---
+
 ### Terraform Example
 
-#### 1. Distribuição Básica com S3
+#### 1. Basic Distribution with S3
 
 ```hcl
 module "cloudfront_s3" {
@@ -47,7 +102,7 @@ module "cloudfront_s3" {
 
   origins = [
     {
-      domain_name              = "meu-bucket.s3.amazonaws.com"
+      domain_name              = "my-bucket.s3.amazonaws.com"
       origin_id                = "s3-origin"
       origin_access_control_id = aws_cloudfront_origin_access_control.s3.id
     }
@@ -55,7 +110,7 @@ module "cloudfront_s3" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Distribuição CloudFront para site estático"
+  comment             = "CloudFront distribution for static site"
   default_root_object = "index.html"
 
   default_cache_behavior = {
@@ -81,7 +136,7 @@ output "cloudfront_domain" {
 }
 ```
 
-#### 2. Distribuição com Certificado ACM
+#### 2. Distribution with ACM Certificate
 
 ```hcl
 module "cloudfront_acm" {
@@ -102,7 +157,7 @@ module "cloudfront_acm" {
 
   aliases             = ["cdn.example.com", "assets.example.com"]
   enabled             = true
-  comment             = "API CDN com certificado ACM"
+  comment             = "API CDN with ACM certificate"
   default_root_object = "index.html"
 
   default_cache_behavior = {
@@ -128,7 +183,7 @@ module "cloudfront_acm" {
 }
 ```
 
-#### 3. Distribuição com Múltiplos Origins e Cache Behaviors
+#### 3. Distribution with Multiple Origins and Cache Behaviors
 
 ```hcl
 module "cloudfront_advanced" {
@@ -160,7 +215,7 @@ module "cloudfront_advanced" {
 
   aliases         = ["cdn.example.com"]
   enabled         = true
-  comment         = "Advanced CloudFront com múltiplos origins"
+  comment         = "Advanced CloudFront with multiple origins"
   price_class     = "PriceClass_200"
 
   default_cache_behavior = {
@@ -204,7 +259,7 @@ module "cloudfront_advanced" {
   restrictions = {
     geo_restriction = {
       restriction_type = "whitelist"
-      locations        = ["US", "BR", "CA", "MX"]
+      locations        = ["US", "CA", "GB", "DE"]
     }
   }
 
@@ -221,68 +276,8 @@ module "cloudfront_advanced" {
   }
 }
 
-output "cloudfront_id" {
+output "cloudfront_distribution_id" {
   value = module.cloudfront_advanced.id
-}
-```
-
-### Terragrunt Example
-
-**`cloudfront/terragrunt.hcl`**
-
-```hcl
-include "root" {
-  path = find_in_parent_folders()
-}
-
-terraform {
-  source = "[...]
-}
-
-dependency "acm" {
-  config_path = "../acm/certificate"
-  mock_outputs = {
-    arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxxxx"
-  }
-}
-
-inputs = {
-  origins = [
-    {
-      domain_name              = "meu-bucket.s3.amazonaws.com"
-      origin_id                = "s3-origin"
-      origin_access_control_id = aws_cloudfront_origin_access_control.s3.id
-    }
-  ]
-
-  aliases             = ["cdn.example.com"]
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "CloudFront production distribution"
-  default_root_object = "index.html"
-
-  default_cache_behavior = {
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "s3-origin"
-    viewer_protocol_policy = "redirect-to-https"
-    cache_policy_id        = "0000000-00000-0000-0000-00000000000"
-    compress               = true
-  }
-
-  viewer_certificate = {
-    acm_certificate_arn      = dependency.acm.outputs.arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
-  }
-
-  price_class = "PriceClass_200"
-
-  tags = {
-    Environment = "production"
-    ManagedBy   = "Terragrunt"
-    Team        = "platform"
-  }
 }
 ```
 
@@ -312,9 +307,9 @@ inputs = {
 | <a name="input_origins"></a> [origins](#input_origins) | List of origins for the CloudFront distribution | `list(object({domain_name = string, origin_id = string, ...}))` | n/a | yes |
 | <a name="input_enabled"></a> [enabled](#input_enabled) | Whether the distribution is enabled | `bool` | `true` | no |
 | <a name="input_is_ipv6_enabled"></a> [is_ipv6_enabled](#input_is_ipv6_enabled) | Whether IPv6 is enabled | `bool` | `true` | no |
-| <a name="input_comment"></a> [comment](#input_comment) | Comments about the distribution | `string` | `""` | no |
-| <a name="input_default_root_object"></a> [default_root_object](#input_default_root_object) | Default root object | `string` | `"index.html"` | no |
-| <a name="input_aliases"></a> [aliases](#input_aliases) | Extra CNAMEs for the distribution | `list(string)` | `[]` | no |
+| <a name="input_comment"></a> [comment](#input_comment) | Comments or description about the distribution | `string` | `""` | no |
+| <a name="input_default_root_object"></a> [default_root_object](#input_default_root_object) | Default root object for the distribution | `string` | `"index.html"` | no |
+| <a name="input_aliases"></a> [aliases](#input_aliases) | Extra CNAMEs (aliases) for the distribution | `list(string)` | `[]` | no |
 | <a name="input_default_cache_behavior"></a> [default_cache_behavior](#input_default_cache_behavior) | Default cache behavior configuration | `object({allowed_methods = list(string), cached_methods = list(string), target_origin_id = string, viewer_protocol_policy = string, ...})` | n/a | yes |
 | <a name="input_ordered_cache_behaviors"></a> [ordered_cache_behaviors](#input_ordered_cache_behaviors) | List of ordered cache behaviors | `list(object({...}))` | `[]` | no |
 | <a name="input_price_class"></a> [price_class](#input_price_class) | Price class for the distribution | `string` | `"PriceClass_200"` | no |
@@ -337,8 +332,8 @@ inputs = {
 
 ## Notes
 
-- Cache policy IDs são gerenciados pela AWS. Consulte [managed policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html).
-- Para integrar com Route53, use o `hosted_zone_id` output.
-- `forwarded_values` é deprecated no AWS Provider v5.0+, use `cache_policy_id` e `origin_request_policy_id` quando possível.
-- Múltiplos origins permitem roteamento inteligente de requisições.
-- Geo-restrições aplicam-se globalmente a toda a distribuição.
+- Cache policy IDs are managed by AWS. See [managed policies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html).
+- To integrate with Route53, use the `hosted_zone_id` output.
+- `forwarded_values` is deprecated in AWS Provider v5.0+, use `cache_policy_id` and `origin_request_policy_id` when possible.
+- Multiple origins enable intelligent request routing.
+- Geo-restrictions apply globally across the entire distribution.

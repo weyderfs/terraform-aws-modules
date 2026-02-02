@@ -8,7 +8,6 @@ Terraform module to create an AWS Cloud Map Private DNS Namespace and Service Di
 - [Usage](#usage)
   - [Terragrunt Example](#terragrunt-example)
   - [Terraform Example](#terraform-example)
-  - [Integration with ECS Service](#integration-with-ecs-service)
 - [DNS Records Types](#dns-records-types)
 - [Routing Policies](#routing-policies)
 - [Health Checks](#health-checks)
@@ -18,6 +17,8 @@ Terraform module to create an AWS Cloud Map Private DNS Namespace and Service Di
 - [Inputs](#inputs)
 - [Outputs](#outputs)
 - [Notes](#notes)
+
+---
 
 ## Features
 
@@ -74,6 +75,7 @@ inputs = {
       }
       health_check_custom_config = {}
     }
+```
 
 ### Terraform Example
 
@@ -120,7 +122,6 @@ module "service_discovery" {
     Project     = "myapp"
   }
 }
-```
 
     "frontend" = {
       description = "Frontend web application"
@@ -137,40 +138,7 @@ module "service_discovery" {
     }
   }
 
-  tags = {
-    region      = "us-east-1"
-    environment = "production"
-    cost-type   = "operational"
-    cost-center = "engineering"
-    team        = "platform"
-    owner       = "devops"
-    managed-by  = "terragrunt"
-    component   = "service-discovery"
-    project     = "myapp"
-  }
-}
-```
-
-### Integration with ECS Service
-
-After creating the namespace and services, reference them in your ECS service configuration:
-
-```hcl
-# In your ECS service terragrunt.hcl
-dependency "cloudmap" {
-  config_path = "../../../cloudmap/service-discovery/myapp"
-}
-
-inputs = {
-  # ... other ECS service inputs ...
-
-  service_registries = [
-    {
-      registry_arn   = dependency.cloudmap.outputs.services["backend-api"].arn
-      container_name = "backend-container"
-      container_port = 8080
-    }
-  ]
+  tags = {}
 }
 ```
 
