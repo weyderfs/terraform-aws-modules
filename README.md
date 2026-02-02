@@ -139,9 +139,8 @@ provider "aws" {
 - **[IAM](#iam)**
   - [Groups](./iam/groups/)
   - [Instance Profile](./iam/instance_profile/)
-  - [Policies](./iam/policies/)
   - [Policy](./iam/policy/)
-  - [Roles](./iam/roles/)
+  - [Role](./iam/role/)
   - [Users](./iam/users/)
 - **[Kinesis](#kinesis)**
   - [Consumer](./kinesis/consumer/)

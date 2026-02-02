@@ -10,14 +10,18 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_description"></a> [description](#input\_description) | n/a | `string` | n/a | yes |
-| <a name="input_name"></a> [name](#input\_name) | n/a | `string` | n/a | yes |
-| <a name="input_policy"></a> [policy](#input\_policy) | n/a | `string` | n/a | yes |
-| <a name="input_role_name"></a> [role\_name](#input\_role\_name) | n/a | `string` | n/a | yes |
+| <a name="input_description"></a> [description](#input\_description) | (Optional, Forces new resource) Description of the IAM policy. | `string` | `null` | no |
+| <a name="input_name"></a> [name](#input\_name) | (Optional, Forces new resource) The name of the policy. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
+| <a name="input_path"></a> [path](#input\_path) | (Optional, default /) Path in which to create the policy. | `string` | `"/"` | no |
+| <a name="input_policy"></a> [policy](#input\_policy) | (Required) The policy document. This is a JSON formatted string. | `string` | n/a | yes |
+| <a name="input_role_name"></a> [role\_name](#input\_role\_name) | (Optional) IAM role name to attach this policy to. | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to the policy. | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| <a name="output_arn"></a> [arn](#output\_arn) | n/a |
+| <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_policy_arn"></a> [policy\_arn](#output\_policy\_arn) | n/a |
 <!-- END_TF_DOCS -->
