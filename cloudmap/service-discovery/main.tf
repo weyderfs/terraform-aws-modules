@@ -32,4 +32,12 @@ resource "aws_service_discovery_service" "asds" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      dns_config,
+      health_check_custom_config
+    ]
+  }
 }
+

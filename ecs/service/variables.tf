@@ -138,6 +138,15 @@ variable "health_check_grace_period_seconds" {
   default     = null
 }
 
+variable "deployment_configuration" {
+  description = "ECS service deployment configuration for rolling updates."
+  type = object({
+    maximum_percent         = optional(number, 200)
+    minimum_healthy_percent = optional(number, 100)
+  })
+  default = {}
+}
+
 variable "tags" {
   description = "Tags list."
   type        = map(string)

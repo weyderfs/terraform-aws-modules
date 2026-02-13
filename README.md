@@ -8,7 +8,7 @@
 ![Modules](https://img.shields.io/badge/modules-50%2B-brightgreen?style=flat-square)
 ![Maintained](https://img.shields.io/badge/maintained%3F-yes-brightgreen?style=flat-square) 
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [About](#about)
 - [Getting Started](#getting-started)
@@ -39,12 +39,12 @@ This repository is organized by **AWS service categories**, with each service co
 
 ```
 terraform-aws-modules/
-├── service-name/           # AWS Service (e.g., vpc, ecs, s3)
-│   ├── module-name/        # Specific module (e.g., vpc, subnet, security-group)
-│   │   ├── main.tf         # Main resource definitions
-│   │   ├── variables.tf    # Input variables
-│   │   ├── outputs.tf      # Output values
-│   │   └── README.md       # Module documentation with examples
+|-- service-name/           # AWS Service (e.g., vpc, ecs, s3)
+|   |-- module-name/        # Specific module (e.g., vpc, subnet, security-group)
+|   |   |-- main.tf         # Main resource definitions
+|   |   |-- variables.tf    # Input variables
+|   |   |-- outputs.tf      # Output values
+|   |   `-- README.md       # Module documentation with examples
 ```
 
 **Key Points:**
@@ -149,6 +149,8 @@ provider "aws" {
 - **[KMS](#kms)**
   - [Alias](./kms/kms-alias/)
   - [Key](./kms/key/)
+- **[Lambda](#lambda)**
+  - [Function](./lambda/function/)
 - **[RDS](#rds)**
   - [DB Option Group](./rds/db-option-group/)
   - [DB Parameter Group](./rds/db-parameter-group/)
@@ -208,16 +210,16 @@ Contributions are welcome! If you'd like to contribute:
 
 If you encounter issues or have questions:
 
-- **📖 Documentation**: Check the module-specific README files
-- **🐛 Bug Reports**: Open an issue on GitHub
-- **💡 Feature Requests**: Open an issue with the "enhancement" label
-- **📧 Direct Contact**: Reach out via [LinkedIn](https://www.linkedin.com/in/weyderfs)
+- **Documentation**: Check the module-specific README files
+- **Bug Reports**: Open an issue on GitHub
+- **Feature Requests**: Open an issue with the "enhancement" label
+- **Direct Contact**: Reach out via [LinkedIn](https://www.linkedin.com/in/weyderfs)
 
 ---
 
 ### Author
 
-:computer: **SRE | DevOps Culture | AWS**  
-:round_pushpin: **LinkedIn**: [@weyderfs](https://www.linkedin.com/in/weyderfs)
+**SRE | DevOps Culture | AWS**  
+**LinkedIn**: [@weyderfs](https://www.linkedin.com/in/weyderfs)
 
 

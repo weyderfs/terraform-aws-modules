@@ -31,7 +31,7 @@ resource "aws_ecs_service" "ese" {
     }
   }
 
-  # Load balancer (opcional)
+  # Load balancer (optional)
   dynamic "load_balancer" {
     for_each = var.load_balancer != null ? [var.load_balancer] : []
     content {
@@ -52,7 +52,7 @@ resource "aws_ecs_service" "ese" {
     }
   }
 
-  # Placement strategy (opcional)
+  # Placement strategy (optional)
   dynamic "ordered_placement_strategy" {
     for_each = var.placement_strategy_type != null ? [1] : []
     content {
@@ -61,7 +61,7 @@ resource "aws_ecs_service" "ese" {
     }
   }
 
-  # Constraints (opcional)
+  # Constraints (optional)
   dynamic "placement_constraints" {
     for_each = var.placement_constraint_type != null ? [1] : []
     content {
@@ -84,6 +84,10 @@ resource "aws_ecs_service" "ese" {
       rollback = deployment_circuit_breaker.value.rollback
     }
   }
+
+  # Deployment strategy for ROLLING updates
+  deployment_maximum_percent         = try(var.deployment_configuration.maximum_percent, 200)
+  deployment_minimum_healthy_percent = try(var.deployment_configuration.minimum_healthy_percent, 100)
 
   health_check_grace_period_seconds = var.health_check_grace_period_seconds
 

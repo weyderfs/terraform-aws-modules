@@ -4,21 +4,22 @@ Terraform module to create an AWS Cloud Map Private DNS Namespace and Service Di
 
 ## Table of Contents
 
-- [Features](#features)
-- [Usage](#usage)
-  - [Terragrunt Example](#terragrunt-example)
-  - [Terraform Example](#terraform-example)
-- [DNS Records Types](#dns-records-types)
-- [Routing Policies](#routing-policies)
-- [Health Checks](#health-checks)
-- [Requirements](#requirements)
-- [Providers](#providers)
-- [Resources](#resources)
-- [Inputs](#inputs)
-- [Outputs](#outputs)
-- [Notes](#notes)
-
----
+- [AWS Cloud Map Service Discovery Module](#aws-cloud-map-service-discovery-module)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Usage](#usage)
+    - [Terragrunt Example](#terragrunt-example)
+  - [DNS Records Types](#dns-records-types)
+  - [Routing Policies](#routing-policies)
+  - [Health Checks](#health-checks)
+    - [1. Custom Health Check (Recommended)](#1-custom-health-check-recommended)
+    - [2. No Health Check](#2-no-health-check)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+  - [Notes](#notes)
 
 ## Features
 
@@ -75,7 +76,13 @@ inputs = {
       }
       health_check_custom_config = {}
     }
-```
+
+
+
+
+
+
+
 
 ### Terraform Example
 
@@ -122,6 +129,7 @@ module "service_discovery" {
     Project     = "myapp"
   }
 }
+```
 
     "frontend" = {
       description = "Frontend web application"
@@ -138,7 +146,40 @@ module "service_discovery" {
     }
   }
 
-  tags = {}
+  tags = {
+    region      = "us-east-1"
+    environment = "production"
+    cost-type   = "operational"
+    cost-center = "engineering"
+    team        = "platform"
+    owner       = "devops"
+    managed-by  = "terragrunt"
+    component   = "service-discovery"
+    project     = "myapp"
+  }
+}
+```
+
+### Integration with ECS Service
+
+After creating the namespace and services, reference them in your ECS service configuration:
+
+```hcl
+# In your ECS service terragrunt.hcl
+dependency "cloudmap" {
+  config_path = "../../../cloudmap/service-discovery/myapp"
+}
+
+inputs = {
+  # ... other ECS service inputs ...
+
+  service_registries = [
+    {
+      registry_arn   = dependency.cloudmap.outputs.services["backend-api"].arn
+      container_name = "backend-container"
+      container_port = 8080
+    }
+  ]
 }
 ```
 
@@ -160,9 +201,69 @@ module "service_discovery" {
 
 ## Health Checks
 
-For private DNS namespaces, use `health_check_custom_config = {}` (empty object). ECS manages the health status automatically based on container health.
+This module supports two types of health checks:
 
-Do not use `failure_threshold` as it's deprecated by AWS.
+### 1. Custom Health Check (Recommended)
+
+Application-managed health status. Your application directly reports its own health status to AWS Service Discovery.
+
+**Example with Custom Health Check:**
+
+```hcl
+services = {
+  "backend-api" = {
+    description = "Backend API service"
+    dns_config = {
+      dns_records = [{ type = "A", ttl = 60 }]
+      routing_policy = "MULTIVALUE"
+    }
+    health_check_custom_config = {
+      failure_threshold = 3  # Service marked unhealthy after 3 failures (optional, defaults to 3)
+    }
+  }
+}
+```
+
+**Implementation Guide:**
+- Your application must call the `UpdateServiceInstanceHealthStatus` API to report health
+- Use AWS SDK in your application to report healthy/unhealthy status
+- Service Discovery uses stateful health checks based on your application reports
+- Recommended for ECS tasks with built-in health monitoring
+
+**Example (Python):**
+```python
+import boto3
+client = boto3.client('servicediscovery')
+client.update_service_instance_health_status(
+    ServiceId='service-id',
+    InstanceId='instance-id',
+    Status='HEALTHY'  # or 'UNHEALTHY'
+)
+```
+
+### 2. No Health Check
+
+For private DNS namespaces without automated health monitoring:
+
+```hcl
+services = {
+  "internal-service" = {
+    description = "Internal service"
+    dns_config = {
+      dns_records = [{ type = "A", ttl = 60 }]
+      routing_policy = "MULTIVALUE"
+    }
+    # health_check_custom_config omitted
+  }
+}
+```
+
+**Use Case:**
+- Non-critical internal services
+- Services with their own health monitoring systems
+- Simple DNS name resolution without health-based routing
+
+**Note:** When using with ECS, ensure task names and ports align with your service registrations.
 
 ## Requirements
 

@@ -29,7 +29,7 @@
 | Name | Description |
 |------|-------------|
 | <a name="output_container_definitions_json"></a> [container\_definitions\_json](#output\_container\_definitions\_json) | JSON of container definitions successfully registered. |
-| <a name="output_container_names"></a> [container\_names](#output\_container\_names) | Lista de nomes dos containers registrados na task definition. |
+| <a name="output_container_names"></a> [container\_names](#output\_container\_names) | List of container names registered in the task definition. |
 | <a name="output_execution_role_arn"></a> [execution\_role\_arn](#output\_execution\_role\_arn) | Execution role ARN (used by ECS agent). |
 | <a name="output_network_mode"></a> [network\_mode](#output\_network\_mode) | Network mode configured for Task Definition. |
 | <a name="output_requires_compatibilities"></a> [requires\_compatibilities](#output\_requires\_compatibilities) | List of compatibilities (FARGATE/EC2) associated with the Task. |

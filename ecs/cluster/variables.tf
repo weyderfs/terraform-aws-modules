@@ -54,7 +54,7 @@ variable "cluster_configuration" {
   default = null
 }
 
-# Optional — set if you want Service Connect to be the default
+# Optional - set if you want Service Connect to be the default
 variable "service_connect_defaults" {
   description = "Namespace default for Service Connect"
   type = object({

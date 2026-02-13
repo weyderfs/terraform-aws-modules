@@ -56,7 +56,7 @@ output "container_definitions_json" {
 }
 
 output "container_names" {
-  description = "Lista de nomes dos containers registrados na task definition."
+  description = "List of container names registered in the task definition."
   value       = try([for c in jsondecode(aws_ecs_task_definition.etd.container_definitions) : c.name], [])
 }
 output "volumes" {

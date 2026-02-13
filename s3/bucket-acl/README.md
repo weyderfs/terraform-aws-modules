@@ -4,12 +4,22 @@ This Terraform/OpenTofu module creates an S3 bucket with comprehensive security 
 
 ## Table of Contents
 
-- [Features](#features)
-- [Usage](#usage)
-  - [Terraform Example](#terraform-example)
-  - [Terragrunt Example](#terragrunt-example)
-- [Security Best Practices](#security-best-practices)
-- [Module Reference](#module-reference)
+- [S3 Bucket Module with ACL Support](#s3-bucket-module-with-acl-support)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Usage](#usage)
+    - [Terraform Example](#terraform-example)
+    - [Terragrunt Example](#terragrunt-example)
+  - [Security Best Practices](#security-best-practices)
+    - [Access Logs Bucket Configuration](#access-logs-bucket-configuration)
+    - [Custom KMS Key](#custom-kms-key)
+  - [Module Reference](#module-reference)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
 
 ## Features
 
@@ -84,14 +94,14 @@ output "bucket_arn" {
 **Directory structure:**
 ```
 infrastructure/
-├── environments/
-│   └── production/
-│       └── us-east-1/
-│           └── s3/
-│               ├── access-logs/
-│               │   └── terragrunt.hcl
-│               └── lambda-artifacts/
-│                   └── terragrunt.hcl
+|-- environments/
+|   `-- production/
+|       `-- us-east-1/
+|           `-- s3/
+|               |-- access-logs/
+|               |   `-- terragrunt.hcl
+|               `-- lambda-artifacts/
+|                   `-- terragrunt.hcl
 ```
 
 **File: `access-logs/terragrunt.hcl`**

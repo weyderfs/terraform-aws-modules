@@ -4,13 +4,18 @@ Terraform module to create and manage ECS Services with optional Service Discove
 
 ## Table of Contents
 
-- [Usage](#usage)
-	- [Terragrunt Example](#terragrunt-example)
-	- [Terraform Example](#terraform-example)
-- [Resources](#resources)
-- [Inputs](#inputs)
-- [Outputs](#outputs)
-- [Notes](#notes)
+- [AWS ECS Service Module](#aws-ecs-service-module)
+	- [Table of Contents](#table-of-contents)
+	- [Usage](#usage)
+		- [Terragrunt Example](#terragrunt-example)
+		- [Terraform Example](#terraform-example)
+	- [Resources](#resources)
+	- [Inputs](#inputs)
+	- [Outputs](#outputs)
+	- [Deployment Strategy](#deployment-strategy)
+		- [Zero-Downtime Deployment Example](#zero-downtime-deployment-example)
+		- [Conservative Deployment Example](#conservative-deployment-example)
+	- [Notes](#notes)
 
 ## Usage
 
@@ -111,6 +116,7 @@ module "ecs_service" {
 |------|-------------|------|---------|:--------:|
 | <a name="input_capacity_provider_strategy"></a> [capacity\_provider\_strategy](#input\_capacity\_provider\_strategy) | Capacity provider strategy (e.g., FARGATE/FARGATE\_SPOT). | <pre>list(object({<br/>    capacity_provider = string<br/>    weight            = optional(number)<br/>    base              = optional(number)<br/>  }))</pre> | `[]` | no |
 | <a name="input_cluster_arn"></a> [cluster\_arn](#input\_cluster\_arn) | ECS Cluster ARN/ID. | `string` | n/a | yes |
+| <a name="input_deployment_configuration"></a> [deployment\_configuration](#input\_deployment\_configuration) | ECS service deployment configuration for rolling updates. | <pre>object({<br/>    maximum_percent         = optional(number, 200)<br/>    minimum_healthy_percent = optional(number, 100)<br/>  })</pre> | `{}` | no |
 | <a name="input_deployment_controller"></a> [deployment\_controller](#input\_deployment\_controller) | Deployment controller (ECS or CODE\_DEPLOY). | <pre>object({<br/>    type = string<br/>  })</pre> | `null` | no |
 | <a name="input_desired_count"></a> [desired\_count](#input\_desired\_count) | Number of tasks desired (for REPLICA only). | `number` | `1` | no |
 | <a name="input_enable_deployment_circuit_breaker"></a> [enable\_deployment\_circuit\_breaker](#input\_enable\_deployment\_circuit\_breaker) | Enables/Configures the ECS circuit breaker. | <pre>object({<br/>    enable   = bool<br/>    rollback = bool<br/>  })</pre> | `null` | no |
@@ -162,10 +168,68 @@ module "ecs_service" {
 | <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | Target Group ARN used by the service (first entry if multiple). |
 | <a name="output_task_definition"></a> [task\_definition](#output\_task\_definition) | Task definition (ARN or family:revision) currently set on the service. |
 
+## Deployment Strategy
+
+The module supports configurable deployment strategies for zero-downtime rolling updates using AWS ECS deployment settings.
+
+### Zero-Downtime Deployment Example
+
+```hcl
+inputs = {
+  name                = "myapp-service"
+  cluster_arn         = dependency.ecs_cluster.outputs.cluster_arn
+  task_definition_arn = dependency.task_definition.outputs.task_definition_arn
+  
+  desired_count       = 3
+  scheduling_strategy = "REPLICA"
+
+  # Deployment configuration for rolling updates (ROLLING strategy)
+  # Uses deployment_maximum_percent and deployment_minimum_healthy_percent
+  deployment_configuration = {
+    maximum_percent         = 200  # Allow 2x tasks during update (3 old + 6 new = 9 total)
+    minimum_healthy_percent = 50   # Maintain at least 50% healthy (1.5 tasks = 2)
+  }
+
+  network_configuration = {
+    subnets         = ["subnet-xxxxx", "subnet-yyyyy"]
+    security_groups = ["sg-xxxxx"]
+  }
+
+  tags = {
+    environment = "production"
+  }
+}
+```
+
+**How it Works:**
+- The module applies `deployment_maximum_percent` and `deployment_minimum_healthy_percent` directly to the ECS Service resource
+- These settings control the ROLLING deployment strategy behavior
+- New task definition is deployed gradually as old tasks terminate
+- At least 50% of desired_count remains healthy throughout
+- Maximum 200% of desired_count can run during transition
+- Default values (200% maximum, 100% minimum) maintain backward compatibility
+
+### Conservative Deployment Example
+
+```hcl
+deployment_configuration = {
+  maximum_percent         = 150  # Only 1.5x tasks during update
+  minimum_healthy_percent = 100  # Require 100% healthy (safer, slower)
+}
+```
+
+**Behavior:**
+- Slower rollout but maintains full service capacity throughout
+- Useful for critical services requiring strict availability SLA
+- Trade-off: Deployment takes longer (more conservative approach)
+
 ## Notes
 
 - For Fargate, `network_configuration` is required and must use private or public subnets with `awsvpc`.
 - Use either `launch_type` or `capacity_provider_strategy` (not both) to avoid conflicts.
 - When using Cloud Map, ensure `service_registries.container_name` matches the container name in the task definition.
-- If using `load_balancer`, set `health_check_grace_period_seconds` to allow task warm‑up.
+- If using `load_balancer`, set `health_check_grace_period_seconds` to allow task warm-up.
+- The `deployment_configuration` parameter controls rolling update strategy via `deployment_maximum_percent` and `deployment_minimum_healthy_percent` resource attributes.
+- Default deployment strategy is ROLLING with 200% maximum and 100% minimum healthy percent.
+- These settings enable zero-downtime deployments when configured with multiple task replicas (desired_count >= 2).
 <!-- END_TF_DOCS -->

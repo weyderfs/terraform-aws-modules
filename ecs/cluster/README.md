@@ -34,11 +34,11 @@ Terraform module to create an AWS ECS Cluster with support for Container Insight
 
 ```hcl
 terraform {
-  source = "git::https://github.com/seu-org/terraform-aws-modules.git//ecs/cluster?ref=v1.0.0"
+  source = "[...]"
 }
 
 inputs = {
-  name                      = "sample-application"
+  name                      = "chatbot-ai"
   enable_container_insights = true
   container_insights_level  = "enhanced"
 
@@ -55,9 +55,8 @@ inputs = {
   }
 
   tags = {
-    #Tags Here...
-  }
 
+  }
 }
 ```
 
@@ -65,7 +64,7 @@ inputs = {
 
 ```hcl
 module "ecs_cluster" {
-  source = "../ecs/cluster"
+  source = "[...]"
 
   name                      = "production"
   enable_container_insights = true
