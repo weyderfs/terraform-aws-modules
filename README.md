@@ -124,6 +124,7 @@ provider "aws" {
     - [ALB](./ec2/loadbalancer/alb/)
     - [ELB](./ec2/elb/lb/)
     - [NLB](./ec2/loadbalancer/nlb/)
+  - [Elastic Computer Cloud](./ec2/ec2-instance/)
 - **[ECS](#ecs)**
   - [Cluster](./ecs/cluster/)
   - [Service](./ecs/service/)
