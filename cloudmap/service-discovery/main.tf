@@ -27,17 +27,12 @@ resource "aws_service_discovery_service" "asds" {
   }
 
   dynamic "health_check_custom_config" {
-    for_each = each.value.health_check_custom_config != null ? [each.value.health_check_custom_config] : []
-    content {}
+    for_each = each.value.health_check_custom_config ? [each.value.health_check_custom_config] : []
+    content {
+      failure_threshold = 1
+    }
   }
 
   tags = var.tags
-
-  lifecycle {
-    ignore_changes = [
-      dns_config,
-      health_check_custom_config
-    ]
-  }
 }
 

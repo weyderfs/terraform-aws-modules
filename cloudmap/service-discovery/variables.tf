@@ -25,7 +25,7 @@ variable "services" {
       }))
       routing_policy = optional(string, "MULTIVALUE")
     })
-    health_check_custom_config = optional(object({}))
+    health_check_custom_config = optional(bool, false)
   }))
   default = {}
 }

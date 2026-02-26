@@ -60,7 +60,7 @@ inputs = {
         ]
         routing_policy = "MULTIVALUE"
       }
-      health_check_custom_config = {}
+      health_check_custom_config = true
     }
 
     "worker-service" = {
@@ -74,7 +74,7 @@ inputs = {
         ]
         routing_policy = "MULTIVALUE"
       }
-      health_check_custom_config = {}
+      health_check_custom_config = true
     }
 
 
@@ -106,7 +106,7 @@ module "service_discovery" {
         ]
         routing_policy = "MULTIVALUE"
       }
-      health_check_custom_config = {}
+      health_check_custom_config = true
     }
 
     "frontend" = {
@@ -120,7 +120,7 @@ module "service_discovery" {
         ]
         routing_policy = "MULTIVALUE"
       }
-      health_check_custom_config = {}
+      health_check_custom_config = true
     }
   }
 
@@ -142,7 +142,7 @@ module "service_discovery" {
         ]
         routing_policy = "MULTIVALUE"
       }
-      health_check_custom_config = {}
+      health_check_custom_config = true
     }
   }
 
@@ -201,11 +201,11 @@ inputs = {
 
 ## Health Checks
 
-This module supports two types of health checks:
+This module supports two types of health checks for Private DNS namespaces:
 
-### 1. Custom Health Check (Recommended)
+### 1. Custom Health Check (Recommended for ECS)
 
-Application-managed health status. Your application directly reports its own health status to AWS Service Discovery.
+Application-managed health status that allows ECS tasks to automatically register as healthy.
 
 **Example with Custom Health Check:**
 
@@ -217,33 +217,26 @@ services = {
       dns_records = [{ type = "A", ttl = 60 }]
       routing_policy = "MULTIVALUE"
     }
-    health_check_custom_config = {
-      failure_threshold = 3  # Service marked unhealthy after 3 failures (optional, defaults to 3)
-    }
+    health_check_custom_config = true  # Enable custom health checks
   }
 }
 ```
 
-**Implementation Guide:**
-- Your application must call the `UpdateServiceInstanceHealthStatus` API to report health
-- Use AWS SDK in your application to report healthy/unhealthy status
-- Service Discovery uses stateful health checks based on your application reports
-- Recommended for ECS tasks with built-in health monitoring
+**How it Works:**
+- When enabled, ECS automatically manages health status for registered tasks
+- Tasks are marked as HEALTHY when they start successfully
+- No manual health reporting required in your application code
+- Recommended for all ECS Service Discovery integrations
 
-**Example (Python):**
-```python
-import boto3
-client = boto3.client('servicediscovery')
-client.update_service_instance_health_status(
-    ServiceId='service-id',
-    InstanceId='instance-id',
-    Status='HEALTHY'  # or 'UNHEALTHY'
-)
-```
+**Important Notes:**
+- The underlying AWS resource uses `failure_threshold = 1` (deprecated but functional)
+- AWS automatically sets this value and it cannot be changed
+- For Private DNS namespaces, this is the only supported health check type
+- For Public DNS namespaces, use `health_check_config` instead (Route 53 health checks)
 
 ### 2. No Health Check
 
-For private DNS namespaces without automated health monitoring:
+For services without automated health monitoring:
 
 ```hcl
 services = {
@@ -253,15 +246,17 @@ services = {
       dns_records = [{ type = "A", ttl = 60 }]
       routing_policy = "MULTIVALUE"
     }
-    # health_check_custom_config omitted
+    health_check_custom_config = false  # No health checks
   }
 }
 ```
 
 **Use Case:**
 - Non-critical internal services
-- Services with their own health monitoring systems
 - Simple DNS name resolution without health-based routing
+- Testing environments
+
+**Warning:** Without health checks, instances will register as UNHEALTHY by default when using ECS Service Discovery. Always set `health_check_custom_config = true` for ECS integrations.
 
 **Note:** When using with ECS, ensure task names and ports align with your service registrations.
 
@@ -291,7 +286,7 @@ services = {
 |------|-------------|------|---------|:--------:|
 | <a name="input_description"></a> [description](#input\_description) | Description of the namespace | `string` | `""` | no |
 | <a name="input_namespace_name"></a> [namespace\_name](#input\_namespace\_name) | Name of the private DNS namespace | `string` | n/a | yes |
-| <a name="input_services"></a> [services](#input\_services) | Map of services to create in the namespace | <pre>map(object({<br>    description           = optional(string, "")<br>    dns_config = object({<br>      dns_records = list(object({<br>        ttl  = optional(number, 60)<br>        type = string<br>      }))<br>      routing_policy = optional(string, "MULTIVALUE")<br>    })<br>    health_check_custom_config = optional(object({}))<br>  }))</pre> | `{}` | no |
+| <a name="input_services"></a> [services](#input\_services) | Map of services to create in the namespace | <pre>map(object({<br>    description           = optional(string, "")<br>    dns_config = object({<br>      dns_records = list(object({<br>        ttl  = optional(number, 60)<br>        type = string<br>      }))<br>      routing_policy = optional(string, "MULTIVALUE")<br>    })<br>    health_check_custom_config = optional(bool, false)<br>  }))</pre> | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID where the namespace will be created | `string` | n/a | yes |
 

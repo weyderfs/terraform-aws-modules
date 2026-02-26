@@ -16,6 +16,7 @@ Terraform module to create and manage ECS Services with optional Service Discove
 		- [Zero-Downtime Deployment Example](#zero-downtime-deployment-example)
 		- [Conservative Deployment Example](#conservative-deployment-example)
 	- [Notes](#notes)
+		- [Deployment Circuit Breaker](#deployment-circuit-breaker)
 
 ## Usage
 
@@ -228,8 +229,25 @@ deployment_configuration = {
 - For Fargate, `network_configuration` is required and must use private or public subnets with `awsvpc`.
 - Use either `launch_type` or `capacity_provider_strategy` (not both) to avoid conflicts.
 - When using Cloud Map, ensure `service_registries.container_name` matches the container name in the task definition.
-- If using `load_balancer`, set `health_check_grace_period_seconds` to allow task warm-up.
+- If using `load_balancer`, set `health_check_grace_period_seconds` to allow task warm‑up.
 - The `deployment_configuration` parameter controls rolling update strategy via `deployment_maximum_percent` and `deployment_minimum_healthy_percent` resource attributes.
 - Default deployment strategy is ROLLING with 200% maximum and 100% minimum healthy percent.
 - These settings enable zero-downtime deployments when configured with multiple task replicas (desired_count >= 2).
+
+### Deployment Circuit Breaker
+
+The module includes `lifecycle` rules to ignore changes to `deployment_circuit_breaker` to prevent unnecessary drift detection. This is because AWS ECS may add or modify circuit breaker configuration automatically, and we want to avoid constant state changes.
+
+If you need to configure deployment circuit breaker, use the `enable_deployment_circuit_breaker` input:
+
+```hcl
+inputs = {
+  enable_deployment_circuit_breaker = {
+    enable   = true
+    rollback = true
+  }
+}
+```
+
+**Note:** Due to lifecycle ignore rules, changes to this configuration after initial creation may not be detected by Terraform. If you need to modify circuit breaker settings, consider recreating the service or manually updating it via AWS CLI/Console.
 <!-- END_TF_DOCS -->
