@@ -1,9 +1,114 @@
-<!-- BEGIN_TF_DOCS -->
+# DynamoDB Table Module
+
+This OpenTofu/Terraform module creates a DynamoDB table with customizable configuration including partition/sort keys, secondary indexes, streams, encryption, and TTL settings.
+
+## Features
+
+- DynamoDB table with configurable billing mode (PROVISIONED or PAY_PER_REQUEST)
+- Support for partition key (hash key) and optional sort key (range key)
+- Global Secondary Indexes (GSI) support
+- Local Secondary Indexes (LSI) support
+- DynamoDB Streams with configurable view types
+- Server-side encryption with optional customer-managed KMS keys
+- Point-in-time recovery (PITR) support
+- Time-to-Live (TTL) configuration
+- Flexible attribute definitions
+- Custom tagging support
+
+## Usage
+
+```hcl
+# terragrunt.hcl
+terraform {
+  source = "git::git@github.com:your-org/terraform-aws-modules.git//dynamodb?ref=v1.0.0"
+}
+
+inputs = {
+  dynamodb_name  = "my-dynamodb-table"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+  hash_key       = "step"
+  range_key      = "step_id"
+  
+  attributes = [
+    {
+      name = "step"
+      type = "S"
+    },
+    {
+      name = "step_id"
+      type = "S"
+    }
+  ]
+
+  stream_enabled   = true
+  stream_view_type = "NEW_AND_OLD_IMAGES"
+  
+  point_in_time_recovery = true
+  
+  server_side_encryption_enabled = true
+  
+  global_secondary_indexes = [
+    {
+      name               = "StepIdIndex"
+      hash_key           = "step_id"
+      range_key          = null
+      write_capacity     = 5
+      read_capacity      = 5
+      projection_type    = "ALL"
+      non_key_attributes = []
+    }
+  ]
+
+  ttl = [
+    {
+      attribute_name = "expire_at"
+      enabled        = true
+    }
+  ]
+
+  tags = {
+    Environment = "production"
+    Project     = "example"
+  }
+}
+
+```
+
+### Example with PAY_PER_REQUEST Billing
+
+```hcl
+inputs = {
+  dynamodb_name = "my-on-demand-table"
+  billing_mode  = "PAY_PER_REQUEST"
+  hash_key      = "id"
+  
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    }
+  ]
+  
+  server_side_encryption_enabled = true
+  point_in_time_recovery        = true
+  
+  tags = {
+    Environment = "development"
+  }
+}
+```
+
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
 
 ## Resources
 
@@ -38,4 +143,14 @@
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | The arn of the table |
 | <a name="output_id"></a> [id](#output\_id) | The name of the table |
-<!-- END_TF_DOCS -->
+
+## Notes
+
+- When using `billing_mode = "PROVISIONED"`, you must specify `read_capacity` and `write_capacity`
+- When using `billing_mode = "PAY_PER_REQUEST"`, read/write capacity values are ignored
+- Local Secondary Indexes (LSI) can only be created at table creation time and cannot be modified later
+- Global Secondary Indexes (GSI) can be added or removed after table creation
+- DynamoDB Streams `stream_view_type` options: `KEYS_ONLY`, `NEW_IMAGE`, `OLD_IMAGE`, `NEW_AND_OLD_IMAGES`
+- Attribute types: `S` (string), `N` (number), `B` (binary)
+- Point-in-time recovery enables continuous backups for the table
+- Server-side encryption is enabled by default using AWS managed keys when `server_side_encryption_enabled = true`
